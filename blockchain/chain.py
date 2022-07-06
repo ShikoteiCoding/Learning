@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from dataclasses import dataclass, field
 from datetime import datetime
 
@@ -13,8 +15,8 @@ class Block:
 
     data: Data = field(init=True)
     signature: str = field(init=True)
-    prev: 'Block' = field(init=True)
-    next: None | 'Block' = field(init=False, default=None)
+    prev: Block = field(init=True)
+    next: None | Block = field(init=False, default=None)
 
 @dataclass
 class TailBlock(Block):
@@ -23,7 +25,7 @@ class TailBlock(Block):
     data: Data = field(init=False, default_factory=Data)
     signature: str = field(init=False, default="")
     prev: None = field(init=False, default=None)
-    next: None | 'Block' = field(init=False, default=None)
+    next: None | Block = field(init=False, default=None)
 
 @dataclass
 class Blockchain:
@@ -31,7 +33,10 @@ class Blockchain:
 
     tail: TailBlock = field(init=True)
     head: Block = field(init=False)
-    _size: int = field(init=False, default=0)
+    _size: int = field(init=False, default=1)
+
+    def __post_init__(self):
+        self.head = self.tail
 
     def forge(self, proof, data, signature) -> dict:
         
@@ -40,6 +45,7 @@ class Blockchain:
         block = Block(data, signature, self.head)
         self.head.next = block
         self.head = block
+        self._size += 1
 
         return {"message": "success"}
     
