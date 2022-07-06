@@ -4,7 +4,6 @@ from datetime import datetime
 @dataclass
 class Data:
     """ Data contained in a block. """
-
     timestamp: datetime
     proof: str
     signature: str
@@ -13,15 +12,29 @@ class Data:
 class Block:
     """ Block storing class. """
 
-    prev: None | 'Block' = field(init=True)
+    data: dict = field(init=True)
+    signature: str = field(init=True)
+    prev: 'Block' = field(init=True)
     next: None | 'Block' = field(init=False, default=None)
-    data: dict = field(init=False, default_factory=dict)
 
 @dataclass
 class Blockchain:
     """ Chain storing class. """
 
-    current_block: Block = field(init=True)
+    tail: Block = field(init=True)
+    head: Block = field(init=False)
+    _size: int = field(init=False, default=0)
 
-    def create_block(self):
-        raise NotImplementedError()
+    def forge(self, proof, data, signature) -> dict:
+        
+        if not proof: return {"message": "refused"}
+        
+        block = Block(data, signature, self.head)
+        self.head.next = block
+        self.head = block
+
+        return {"message": "success"}
+    
+    @property
+    def size(self) -> int:
+        return self._size
