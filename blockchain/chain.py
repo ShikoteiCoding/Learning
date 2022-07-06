@@ -12,7 +12,6 @@ class Data:
 @dataclass
 class Block:
     """ Block storing class. """
-
     data: Data = field(init=True)
     signature: str = field(init=True)
     prev: Block = field(init=True, repr=False)
@@ -21,7 +20,6 @@ class Block:
 @dataclass
 class TailBlock(Block):
     """ Tail block. """
-
     data: Data = field(init=False, default_factory=Data)
     signature: str = field(init=False, default="")
     prev: None = field(init=False, default=None, repr=False)
@@ -30,7 +28,6 @@ class TailBlock(Block):
 @dataclass
 class Blockchain:
     """ Chain storing class. """
-
     tail: TailBlock = field(init=True)
     head: Block = field(init=False)
     _size: int = field(init=False, default=1)
