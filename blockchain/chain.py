@@ -15,8 +15,8 @@ class Block:
 
     data: Data = field(init=True)
     signature: str = field(init=True)
-    prev: Block = field(init=True)
-    next: None | Block = field(init=False, default=None)
+    prev: Block = field(init=True, repr=False)
+    next: None | Block = field(init=False, default=None, repr=False)
 
 @dataclass
 class TailBlock(Block):
@@ -24,8 +24,8 @@ class TailBlock(Block):
 
     data: Data = field(init=False, default_factory=Data)
     signature: str = field(init=False, default="")
-    prev: None = field(init=False, default=None)
-    next: None | Block = field(init=False, default=None)
+    prev: None = field(init=False, default=None, repr=False)
+    next: None | Block = field(init=False, default=None, repr=False)
 
 @dataclass
 class Blockchain:
