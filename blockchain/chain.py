@@ -3,6 +3,16 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 
+def fake_hash() -> str:
+    return "abxx"
+
+def mine_block(previous_hash: str, transactions: str, nounce: str) -> tuple[Block, str]:
+    """ Mining encapsulation. Simplistic version waiting for API """
+    return Block(previous_hash, Data(transactions), nounce, fake_hash()), "fake proof"
+
+class WrongBlockError(Exception):
+    ...
+
 @dataclass
 class Data:
     """ Data contained in a block. """
@@ -19,16 +29,29 @@ class Block:
     _prev: Block = field(init=False, repr=False)
     _next: None | Block = field(init=False, default=None, repr=False)
 
+    @property
+    def prev(self) -> None | Block:
+        return self._prev
+    @prev.setter
+    def prev(self, prev_block: Block) -> None:
+        if prev_block.hash != self.previous_hash: 
+            raise WrongBlockError(f"Hash are not corresponding: {self.previous_hash} and {prev_block.hash}")
+        self._prev = prev_block
+
 @dataclass
 class TailBlock(Block):
     """ Tail block. """
-    previous_hash: None | str = field(init=False, default=None)
+    previous_hash: str = field(init=False, default="abc123")
     data: None | Data = field(init=False, default_factory=Data)
     nounce: str = field(init=False, default="")
-    hash: str = field(init=False, default="")
+    hash: str = field(init=False, default_factory=fake_hash)
 
     _prev: None = field(init=False, default=None, repr=False)
     _next: None | Block = field(init=False, default=None, repr=False)
+
+    @property
+    def prev(self) -> None: 
+        return self._prev
 
 @dataclass
 class Blockchain:
@@ -52,7 +75,7 @@ class Blockchain:
         return {"message": "success"}
 
     def switch_head(self, new_block: Block) -> None:
-        new_block._prev = self.head
+        new_block.prev = self.head
         self.head._next = new_block
         self.head = new_block
 
@@ -69,10 +92,3 @@ class Blockchain:
     @nounce.setter
     def nounce(self, new: str) -> None:
         self._nounce = new
-
-def fake_hash() -> str:
-    return ""
-
-def mine_block(previous_hash: str, transactions: str, nounce: str) -> tuple[Block, str]:
-    """ Mining encapsulation. Simplistic version waiting for API """
-    return Block(previous_hash, Data(transactions), nounce, fake_hash()), "fake proof"
