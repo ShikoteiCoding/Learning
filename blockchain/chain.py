@@ -46,12 +46,18 @@ class Blockchain:
         
         if not proof: return {"message": "refused"}
 
-        block._prev = self.head
-        self.head._next = block
-        self.head = block
+        self.switch_head(block)
         self._size += 1
 
         return {"message": "success"}
+
+    def switch_head(self, new_block: Block) -> None:
+        new_block._prev = self.head
+        self.head._next = new_block
+        self.head = new_block
+
+    def verify_block(self, block: Block) -> bool:
+        raise NotImplementedError()
     
     @property
     def size(self) -> int:
