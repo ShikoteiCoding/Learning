@@ -16,7 +16,7 @@ def create_block_chain_without_users():
 def create_hashed_binary_tree():
     """ Create a binary tree from arbitrary list of data. """
     
-    bst = BinaryTree(["salut", "i'm", "a", "tree"])
+    bst = BinaryTree(["salut", "i'm"])
 
     print(bst.hash)
 

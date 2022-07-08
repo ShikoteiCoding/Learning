@@ -37,10 +37,13 @@ class BinaryTree:
 
         if len(nodes) == 2:
             return Node(hash(nodes[0].value + nodes[1].value), nodes[0], nodes[1])
+        if len(nodes) == 1:
+            return Node(hash(nodes[0].value), nodes[0])
 
         left: Node = self.__build_tree_recursive(nodes[:half])
         right: Node = self.__build_tree_recursive(nodes[half:])
         value: str = hash(left.value + right.value)
+
         return Node(value, left, right)
 
     def add(self, value: str) -> None:
