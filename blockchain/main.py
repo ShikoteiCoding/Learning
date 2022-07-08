@@ -18,6 +18,8 @@ def create_hashed_binary_tree():
     
     bst = BinaryTree(["salut", "i'm", "a", "tree"])
 
+    print(bst.hash)
+
 
 if __name__ == "__main__":
     create_hashed_binary_tree()
