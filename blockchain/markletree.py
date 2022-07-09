@@ -15,9 +15,24 @@ def hash(value: str) -> str:
 @dataclass
 class Node:
     """ Node sub-element of Markle Tree """
-    value: str = field(init=True, repr=True, default="")
-    right: Node | None = field(init=True, repr=False, default=None)
-    left: Node | None = field(init=True, repr=False, default=None)
+    __value: str = field(init=True, repr=True, default="")
+    __right: Node | None = field(init=True, repr=False, default=None)
+    __left: Node | None = field(init=True, repr=False, default=None)
+
+    @property
+    def value(self) -> str:
+        """ The hash stored by the node. """
+        return self.__value
+
+    @property
+    def right(self) -> Node | None:
+        """ The right child of the node. """
+        return self.__right
+
+    @property
+    def left(self) -> Node | None:
+        """ The left chiled of the node. """
+        return self.__left
 
 @dataclass
 class BinaryTree:
@@ -99,6 +114,13 @@ class BinaryTree:
 
     def add(self, value: str) -> None:
         """ Add a leaf to the tree. """
+        raise NotImplementedError()
+
+    def find_value(self, value: str) -> None:
+        """ Find a node and returns it's position. """
+        raise NotImplementedError()
+
+    def find_hash(self, hash: str) -> None:
         raise NotImplementedError()
 
     @property
