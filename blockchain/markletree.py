@@ -19,10 +19,6 @@ class Node:
     right: Node | None = field(init=True, repr=False, default=None)
     left: Node | None = field(init=True, repr=False, default=None)
 
-    @property
-    def is_leaf(self) -> bool:
-        return (not self.right and not self.left)
-
 @dataclass
 class BinaryTree:
     """ Data Structure holding hashed transactions. """
@@ -55,14 +51,10 @@ class BinaryTree:
 
         return Node(value, left, right)
 
-    def add(self, value: str) -> None:
-        """ Add a leaf to the tree. """
-        raise NotImplementedError()
-
     def __str__(self, depth: int = 0, indent: int = 3) -> str:
+        """ Pretty print of tree. """
 
         out = self.__to_string_recursive(self.root)
-
         return out
 
     def __to_string_recursive(
@@ -70,7 +62,7 @@ class BinaryTree:
         node: Node, 
         depth: int = 0, 
         indent: int = 3,
-        ignored: list | None = None,
+        ignored: list = [],
         is_right: bool = False, 
         is_left: bool = False
         ) -> str:
@@ -83,8 +75,6 @@ class BinaryTree:
             out = ' ' * (indent + 1)
 
         count = 1
-        if ignored is None:
-            ignored = []
         while count < depth:
             out += f' {VERTICAL_BAR}' if count not in ignored else 2 * ' '
             out += indent * ' '
@@ -98,7 +88,7 @@ class BinaryTree:
         
         out += f"{node.value}\n"
 
-        args = (depth + 1, indent, ignored)
+        args = (depth + 1, indent, ignored.copy())
 
         if node.left:
             out += self.__to_string_recursive(node.left, *args, is_left=True)
@@ -106,6 +96,10 @@ class BinaryTree:
             out += self.__to_string_recursive(node.right, *args, is_right=True)
 
         return out
+
+    def add(self, value: str) -> None:
+        """ Add a leaf to the tree. """
+        raise NotImplementedError()
 
     @property
     def hash(self):
