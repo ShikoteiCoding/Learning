@@ -16,17 +16,18 @@ def hash(value: str) -> str:
 class MerkleTree:
     """ Data Structure holding hashed transactions. """
 
-    values: InitVar[list[str]]
+    values: InitVar[list[str] | None] = None
 
-    root: Node = field(init=False, repr=True, default_factory=Node)
-    size: int = field(init=False, repr=True, default=0)
+    __root: Node | None = field(init=False, repr=True, default_factory=Node)
+    __size: int = field(init=False, repr=True, default=0)
 
-    def __post_init__(self, values: list[str]) -> None:
+    def __post_init__(self, values: list[str] | None) -> None:
         """ Build the tree from list of values. """
 
+        if not values: return
+        
         nodes: list[Node] = [Node(hash(value)) for value in values]
-
-        self.root = self.__build_tree_recursive(nodes)
+        self.__root = self.__build_tree_recursive(nodes)
 
     def __build_tree_recursive(self, nodes: list[Node]) -> Node:
         """ Recursively build the nodes and their descendants. """
@@ -38,27 +39,21 @@ class MerkleTree:
         if len(nodes) == 1:
             return Node(hash(nodes[0].value), nodes[0])
 
-        left: Node = self.__build_tree_recursive(nodes[:half])
-        right: Node = self.__build_tree_recursive(nodes[half:])
+        left: Node = self.__build_tree_recursive(nodes[half:])
+        right: Node = self.__build_tree_recursive(nodes[:half])
         value: str = hash(left.value + right.value)
 
         return Node(value, left, right)
 
-    def __str__(self, depth: int = 0, indent: int = 3) -> str:
+    def __str__(self) -> str | None:
         """ Pretty print of tree. """
 
-        out = self.__to_string_recursive(self.root)
-        return out
+        if not self.__root: return
 
-    def __to_string_recursive(
-        self, 
-        node: Node, 
-        depth: int = 0, 
-        indent: int = 3,
-        ignored: list = [],
-        is_right: bool = False, 
-        is_left: bool = False
-        ) -> str:
+        return self.__to_string_recursive(self.__root)
+
+    def __to_string_recursive(self, node: Node, depth: int = 0, indent: int = 3, 
+            ignored: list = [], is_right: bool = False, is_left: bool = False) -> str:
 
         out: str = ''
 
@@ -102,5 +97,16 @@ class MerkleTree:
         raise NotImplementedError()
 
     @property
-    def hash(self):
-        return self.root.value
+    def hash(self) -> str | None:
+        """ Hash of root node. """
+        if not self.__root: return
+
+        return self.__root.value
+
+    @property
+    def root(self):
+        return self.__root
+    
+    @property
+    def size(self):
+        return self.size

@@ -18,6 +18,8 @@ def create_hashed_binary_tree():
     
     bst = MerkleTree(["salut", "i'm", "an", "anus", "abab", "jdj", "sas", "sass", "askas", "adzad"])
 
+    t = MerkleTree()
+
     print(bst)
 
 
