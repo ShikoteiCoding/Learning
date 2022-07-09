@@ -1,6 +1,6 @@
-from lib.blockchain import Blockchain, Block, Data, TailBlock, mine_block
+from lib.blockchain import Blockchain, TailBlock, mine_block
 
-from lib.markletree import BinaryTree, Node
+from lib.tree import MerkleTree
 
 def create_block_chain_without_users():
     """ Create and build blockchain without users. Simplistic scenario. """
@@ -16,10 +16,10 @@ def create_block_chain_without_users():
 def create_hashed_binary_tree():
     """ Create a binary tree from arbitrary list of data. """
     
-    bst = BinaryTree(["salut", "i'm", "an", "anus", "abab", "jdj", "sas", "sass", "askas", "adzad"])
+    bst = MerkleTree(["salut", "i'm", "an", "anus", "abab", "jdj", "sas", "sass", "askas", "adzad"])
 
     print(bst)
 
 
 if __name__ == "__main__":
-    create_block_chain_without_users()
+    create_hashed_binary_tree()

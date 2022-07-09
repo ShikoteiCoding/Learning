@@ -1,5 +1,5 @@
-from __future__ import annotations
 from dataclasses import InitVar, dataclass, field
+from .node import Node
 
 import hashlib
 
@@ -13,29 +13,7 @@ def hash(value: str) -> str:
     return hashlib.sha256(value.encode('utf-8')).hexdigest()
 
 @dataclass
-class Node:
-    """ Node sub-element of Markle Tree """
-    __value: str = field(init=True, repr=True, default="")
-    __right: Node | None = field(init=True, repr=False, default=None)
-    __left: Node | None = field(init=True, repr=False, default=None)
-
-    @property
-    def value(self) -> str:
-        """ The hash stored by the node. """
-        return self.__value
-
-    @property
-    def right(self) -> Node | None:
-        """ The right child of the node. """
-        return self.__right
-
-    @property
-    def left(self) -> Node | None:
-        """ The left chiled of the node. """
-        return self.__left
-
-@dataclass
-class BinaryTree:
+class MerkleTree:
     """ Data Structure holding hashed transactions. """
 
     values: InitVar[list[str]]
