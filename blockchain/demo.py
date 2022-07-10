@@ -18,10 +18,14 @@ def create_hashed_binary_tree():
     
     bst = MerkleTree(["salut", "i'm", "an", "anus", "abab", "jdj", "sas", "sass", "askas", "adzad"])
 
-    t = MerkleTree()
+def insert_in_binary_tree():
 
+    bst = MerkleTree()
+    bst.insert("hahade")
+    bst.insert("hahaded")
+    bst.insert("hahaddz")
+    bst.insert("ddd")
     print(bst)
 
-
 if __name__ == "__main__":
-    create_hashed_binary_tree()
+    insert_in_binary_tree()

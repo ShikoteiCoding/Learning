@@ -14,12 +14,13 @@ def hash(value: str) -> str:
 
 @dataclass
 class MerkleTree:
-    """ Data Structure holding hashed transactions. """
+    """ Data Structure holding hashed data. """
 
     values: InitVar[list[str] | None] = None
 
-    __root: Node | None = field(init=False, repr=True, default_factory=Node)
+    __root: Node | None = field(init=False, repr=True, default=None)
     __size: int = field(init=False, repr=True, default=0)
+    __depth: int = field(init=False, repr=True, default=0)
 
     def __post_init__(self, values: list[str] | None) -> None:
         """ Build the tree from list of values. """
@@ -32,15 +33,15 @@ class MerkleTree:
     def __build_tree_recursive(self, nodes: list[Node]) -> Node:
         """ Recursively build the nodes and their descendants. """
 
-        half: int = len(nodes) // 2
+        pivot: int = len(nodes) // 2
 
         if len(nodes) == 2:
             return Node(hash(nodes[0].value + nodes[1].value), nodes[0], nodes[1])
         if len(nodes) == 1:
             return Node(hash(nodes[0].value), nodes[0])
 
-        left: Node = self.__build_tree_recursive(nodes[half:])
-        right: Node = self.__build_tree_recursive(nodes[:half])
+        left: Node = self.__build_tree_recursive(nodes[pivot:])
+        right: Node = self.__build_tree_recursive(nodes[:pivot])
         value: str = hash(left.value + right.value)
 
         return Node(value, left, right)
@@ -74,7 +75,7 @@ class MerkleTree:
             out += f' {L_BRACKET_LONG}'
             ignored.append(depth)
         
-        out += f"{node.value}\n"
+        out += f"{node.value} ({'right' if is_right == True else 'left'})\n "
 
         args = (depth + 1, indent, ignored.copy())
 
@@ -85,9 +86,32 @@ class MerkleTree:
 
         return out
 
-    def add(self, value: str) -> None:
-        """ Add a leaf to the tree. """
-        raise NotImplementedError()
+    def insert(self, value: str) -> None:
+        """ Add a node to the tree. In order insertion (not a BST, just a BT). """
+
+        if not self.__root: 
+            self.__root = Node(hash(value))
+        else:
+            self.__insert_recursive(self.__root, value, None)
+
+    def __insert_recursive(self, node: Node | None, value: str, parent: Node | None) -> Node:
+        """ Recursive insertion in order (left first). """
+
+        if node is None:
+            node = Node(hash(value), None, None, parent)
+            return node
+        
+        if (node.right_count == node.left_count):
+            node.left = self.__insert_recursive(node.left, value, node)
+        
+        elif (node.right_count < node.left_count):
+
+            if (node.left_count % 2 == 1):
+                node.right = self.__insert_recursive(node.right, value, node)
+            else:
+                node.left = self.__insert_recursive(node.left, value, node)
+    
+        return node
 
     def find_value(self, value: str) -> None:
         """ Find a node and returns it's position. """
