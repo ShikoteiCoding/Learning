@@ -81,6 +81,13 @@ class MerkleTree:
 
         return out
 
+    def __update_hash_ancestors(self, node: Node | None) -> None:
+        """ Given a node, update the hash from leaf to root. """
+        curr = node
+        while curr:
+            curr.update_hash()
+            curr = curr.parent
+
     def insert(self, value: str) -> None:
         """ Add a node to the tree. In order insertion (not a BST, just a BT). """
 
@@ -94,10 +101,7 @@ class MerkleTree:
 
         if node is None:
             node = Node(hash(value), None, None, parent)
-            curr = parent
-            while curr:
-                curr.update_hash()
-                curr = curr.parent
+            self.__update_hash_ancestors(parent)
             return node
         
         if (node.right_count == node.left_count):
