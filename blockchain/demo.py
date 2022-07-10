@@ -23,9 +23,8 @@ def insert_in_binary_tree():
     bst = MerkleTree()
     bst.insert("hahade")
     bst.insert("hahaded")
-    bst.insert("hahaddz")
-    bst.insert("ddd")
-    print(bst)
+    bst.insert("haddhaded")
+    bst.insert("haddhaded")
 
 if __name__ == "__main__":
     insert_in_binary_tree()

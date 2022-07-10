@@ -1,16 +1,11 @@
 from dataclasses import InitVar, dataclass, field
 from .node import Node
-
-import hashlib
+from .utils import hash
 
 L_BRACKET_SHORT = '└─'
 L_BRACKET_LONG = '└──'
 T_BRACKET = '├──'
 VERTICAL_BAR = '│'
-
-def hash(value: str) -> str:
-    """ Hash a string value. """
-    return hashlib.sha256(value.encode('utf-8')).hexdigest()
 
 @dataclass
 class MerkleTree:

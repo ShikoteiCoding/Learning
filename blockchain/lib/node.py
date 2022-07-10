@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from .utils import hash
 
 @dataclass(slots=True)
 class Node:
@@ -57,9 +58,17 @@ class Node:
         if not self.right: return 0
         return self.__count_recursive(self.right)
 
+    @property
+    def is_leaf(self) -> bool:
+        """ Return true if is a leaf in the tree. """
+        return (self.left is None and not self.right)
+
     def __count_recursive(self, node: Node | None) -> int:
         """ Compute the number of child in the node provided. """
         if node is None:
             return 0
 
         return 1 + self.__count_recursive(node.left) + self.__count_recursive(node.right)
+
+    def recompute_hash(self) -> None:
+        """"""
