@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from .utils import hash
+from .utils import hash_entries
 
 @dataclass(slots=True)
 class Node:
@@ -15,6 +15,11 @@ class Node:
     def value(self) -> str:
         """ The hash stored by the node. """
         return self.__value
+
+    @value.setter
+    def value(self, val: str) -> None:
+        """ Set the hash stored in the node. """
+        self.__value = val
 
     @property
     def left(self) -> Node | None:
@@ -70,5 +75,8 @@ class Node:
 
         return 1 + self.__count_recursive(node.left) + self.__count_recursive(node.right)
 
-    def recompute_hash(self) -> None:
-        """"""
+    def update_hash(self) -> None:
+        """ """
+        left_value = self.left.value if self.left else ''
+        right_value = self.right.value if self.right else ''
+        self.value = hash_entries(left_value, right_value)

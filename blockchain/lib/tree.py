@@ -94,6 +94,10 @@ class MerkleTree:
 
         if node is None:
             node = Node(hash(value), None, None, parent)
+            curr = parent
+            while curr:
+                curr.update_hash()
+                curr = curr.parent
             return node
         
         if (node.right_count == node.left_count):
