@@ -66,7 +66,7 @@ class Node:
     @property
     def is_leaf(self) -> bool:
         """ Return true if is a leaf in the tree. """
-        return (self.left is None and not self.right)
+        return (self.left is None and self.right is None)
 
     def __count_recursive(self, node: Node | None) -> int:
         """ Compute the number of child in the node provided. """

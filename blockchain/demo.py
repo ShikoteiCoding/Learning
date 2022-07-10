@@ -30,5 +30,17 @@ def insert_in_binary_tree():
     bst.insert("haddhaded")
     print(bst)
 
+def some_tree_metrics():
+
+    bst = MerkleTree()
+    for val in ["salut", "i'm", "an", "anus", "abab", "jdj", "sas", "sass", "askas", "adzad"]:
+        bst.insert(val)
+
+    print(bst)
+    print(bst.depth)
+    print(bst.size)
+    print(bst.nb_leaves)
+
+
 if __name__ == "__main__":
-    insert_in_binary_tree()
+    some_tree_metrics()

@@ -1,4 +1,5 @@
 from dataclasses import InitVar, dataclass, field
+import re
 from .node import Node
 from .utils import hash
 
@@ -14,8 +15,6 @@ class MerkleTree:
     values: InitVar[list[str] | None] = None
 
     __root: Node | None = field(init=False, repr=True, default=None)
-    __size: int = field(init=False, repr=True, default=0)
-    __depth: int = field(init=False, repr=True, default=0)
 
     def __post_init__(self, values: list[str] | None) -> None:
         """ Build the tree from list of values. """
@@ -34,11 +33,43 @@ class MerkleTree:
 
     @property
     def root(self):
+        """ Root (base) node of the tree. """
         return self.__root
     
     @property
-    def size(self):
-        return self.size
+    def depth(self) -> int:
+        """ Height of the tree. """
+        return self.__depth_recursive(self.__root)
+    
+    def __depth_recursive(self, node: Node | None) -> int:
+        """ Recursively compute the size of a tree. """
+        if node is None:
+            return -1
+        return 1 + max(self.__depth_recursive(node.left), self.__depth_recursive(node.right))
+
+    @property
+    def size(self) -> int:
+        """ Size of the tree. """
+        if not self.__root: return 0
+        
+        return 1 + self.__root.left_count + self.__root.right_count
+
+    @property
+    def nb_leaves(self) -> int:
+        """ Number of leaves. """
+        return self.__number_leaves_recursive(self.__root)
+    
+    def __number_leaves_recursive(self, node: Node | None) -> int:
+        """ Recursicvely compute the number of leaves. """
+
+        
+        if node is None:
+            return 0
+
+        if node.is_leaf:
+            return 1
+
+        return self.__number_leaves_recursive(node.left) + self.__number_leaves_recursive(node.right)
 
     def __build_tree_recursive(self, nodes: list[Node]) -> Node:
         """ Recursively build the nodes and their descendants. """
