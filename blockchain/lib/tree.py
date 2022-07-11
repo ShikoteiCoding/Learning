@@ -1,6 +1,6 @@
 from dataclasses import InitVar, dataclass, field
 import re
-from .node import Node
+from .node import Node, Leaf
 from .utils import hash
 
 L_BRACKET_SHORT = '└─'
@@ -21,8 +21,8 @@ class MerkleTree:
 
         if not values: return
         
-        for value in values:
-            self.insert(value)
+        leaves: list[Leaf] = [Leaf(value) for value in values]
+        self.__root = self.__build_tree_recursive(leaves)
 
     @property
     def hash(self) -> str | None:
@@ -78,7 +78,7 @@ class MerkleTree:
 
         return self.__number_leaves_recursive(node.left) + self.__number_leaves_recursive(node.right)
 
-    def __build_tree_recursive(self, nodes: list[Node]) -> Node:
+    def __build_tree_recursive(self, nodes: list[Leaf]) -> Node:
         """ Recursively build the nodes and their descendants. """
 
         pivot: int = len(nodes) // 2
@@ -98,7 +98,7 @@ class MerkleTree:
         """ Given a node, update the hash from leaf to root. """
         curr = node
         while curr:
-            curr.update_hash()
+            curr.compute_hash()
             curr = curr.parent
 
     def insert(self, value: str) -> None:

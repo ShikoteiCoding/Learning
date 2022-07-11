@@ -1,6 +1,7 @@
 from lib.blockchain import Blockchain, TailBlock, mine_block
 
 from lib.tree import MerkleTree
+from lib.node import Leaf
 
 def create_block_chain_without_users():
     """ Create and build blockchain without users. Simplistic scenario. """
@@ -33,16 +34,19 @@ def insert_in_binary_tree():
 def some_tree_metrics():
 
     bst = MerkleTree()
-    for val in ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5']:
-        bst.insert(val)
+    #for val in ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5']:
+    #    bst.insert(val)
 
-    bst1 = MerkleTree(['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE10'])
+    bst1 = MerkleTree(['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5'])
 
-    print(bst)
+    #print(bst)
     print(bst1)
 
-    print(bst == bst1)
+    #print(bst == bst1)
+
+def some_leaves():
+    print(Leaf("test"))
 
 
 if __name__ == "__main__":
-    some_tree_metrics()
+    some_leaves()

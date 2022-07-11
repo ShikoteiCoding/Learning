@@ -3,13 +3,15 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from .utils import hash_entries
 
+
 @dataclass(slots=True)
 class Node:
     """ Node sub-element of Markle Tree """
-    __value: str = field(init=True, repr=True, default="")
-    __left: Node | None = field(init=True, repr=False, default=None)
+    __value: str = field(init=True, repr=True)
+    __left: Node = field(init=True, repr=False)
+     # Right can be None if single child Node. Left can never be None in a Node.
     __right: Node | None = field(init=True, repr=False, default=None)
-    __parent: Node | None = field(init=True, repr=False, default=None)
+    __parent: Node | None = field(init=False, repr=False, default=None)
 
     @property
     def value(self) -> str:
@@ -22,7 +24,7 @@ class Node:
         self.__value = val
 
     @property
-    def left(self) -> Node | None:
+    def left(self) -> Node:
         """ The left child of the node. """
         return self.__left
 
@@ -54,7 +56,6 @@ class Node:
     @property
     def left_count(self) -> int:
         """ The number of left descendant nodes. """
-        if not self.left: return 0
         return self.__count_recursive(self.left)
 
     @property
@@ -65,8 +66,8 @@ class Node:
 
     @property
     def is_leaf(self) -> bool:
-        """ Return true if is a leaf in the tree. """
-        return (self.left is None and self.right is None)
+        """ Return False for a Node. """
+        return False
 
     def __eq__(self, other: Node) -> bool:
         """ Return True if the hash is the same. """
@@ -79,8 +80,20 @@ class Node:
 
         return 1 + self.__count_recursive(node.left) + self.__count_recursive(node.right)
 
-    def update_hash(self) -> None:
-        """ """
-        left_value = self.left.value if self.left else ''
-        right_value = self.right.value if self.right else ''
+    def compute_hash(self) -> None:
+        """ 
+        Compute the hash from the left value and right value. 
+        Double left value if no right value.
+        """
+        left_value = self.__left.value
+        right_value = self.right.value if self.right else self.__left.value
         self.value = hash_entries(left_value, right_value)
+
+@dataclass(slots=True)
+class Leaf(Node):
+    """ Node sub-element of Markle Tree """
+    __value: str = field(init=True, repr=True)
+    __left: None = field(init=False, repr=False, default=None)
+    __right: None = field(init=False, repr=False, default=None)
+    # Parent can be initialized at None but set later.
+    __parent: Node | None = field(init=False, repr=False, default=None)
