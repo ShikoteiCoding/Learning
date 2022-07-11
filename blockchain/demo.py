@@ -41,6 +41,5 @@ def some_tree_metrics():
     print(bst.size)
     print(bst.nb_leaves)
 
-
 if __name__ == "__main__":
     some_tree_metrics()
