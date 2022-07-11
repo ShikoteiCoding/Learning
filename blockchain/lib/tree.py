@@ -44,7 +44,9 @@ class MerkleTree:
     def __depth_recursive(self, node: Node | None) -> int:
         """ Recursively compute the size of a tree. """
         if node is None:
-            return -1
+            return 0
+        if node.parent is not None:
+            return 1
         return 1 + max(self.__depth_recursive(node.left), self.__depth_recursive(node.right))
 
     @property
@@ -61,8 +63,6 @@ class MerkleTree:
     
     def __number_leaves_recursive(self, node: Node | None) -> int:
         """ Recursicvely compute the number of leaves. """
-
-        
         if node is None:
             return 0
 
