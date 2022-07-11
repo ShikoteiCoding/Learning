@@ -40,14 +40,6 @@ class MerkleTree:
     def depth(self) -> int:
         """ Height of the tree. """
         return self.__depth_recursive(self.__root)
-    
-    def __depth_recursive(self, node: Node | None) -> int:
-        """ Recursively compute the size of a tree. """
-        if node is None:
-            return 0
-        if node.parent is not None:
-            return 1
-        return 1 + max(self.__depth_recursive(node.left), self.__depth_recursive(node.right))
 
     @property
     def size(self) -> int:
@@ -60,6 +52,21 @@ class MerkleTree:
     def nb_leaves(self) -> int:
         """ Number of leaves. """
         return self.__number_leaves_recursive(self.__root)
+
+    def __str__(self) -> str | None:
+        """ Pretty print of tree. """
+
+        if not self.__root: return
+
+        return self.__to_string_recursive(self.__root)
+    
+    def __depth_recursive(self, node: Node | None) -> int:
+        """ Recursively compute the size of a tree. """
+        if node is None:
+            return 0
+        if node.parent is not None:
+            return 1
+        return 1 + max(self.__depth_recursive(node.left), self.__depth_recursive(node.right))
     
     def __number_leaves_recursive(self, node: Node | None) -> int:
         """ Recursicvely compute the number of leaves. """
@@ -128,13 +135,6 @@ class MerkleTree:
 
     def find_hash(self, hash: str) -> None:
         raise NotImplementedError()
-
-    def __str__(self) -> str | None:
-        """ Pretty print of tree. """
-
-        if not self.__root: return
-
-        return self.__to_string_recursive(self.__root)
 
     def __to_string_recursive(self, node: Node, depth: int = 0, indent: int = 3, 
             ignored: list = [], is_right: bool = False, is_left: bool = False) -> str:
