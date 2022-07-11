@@ -68,6 +68,10 @@ class Node:
         """ Return true if is a leaf in the tree. """
         return (self.left is None and self.right is None)
 
+    def __eq__(self, other: Node) -> bool:
+        """ Return True if the hash is the same. """
+        return self.__value == other.value
+
     def __count_recursive(self, node: Node | None) -> int:
         """ Compute the number of child in the node provided. """
         if node is None:

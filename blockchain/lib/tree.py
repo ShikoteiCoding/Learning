@@ -21,8 +21,8 @@ class MerkleTree:
 
         if not values: return
         
-        nodes: list[Node] = [Node(hash(value)) for value in values]
-        self.__root = self.__build_tree_recursive(nodes)
+        for value in values:
+            self.insert(value)
 
     @property
     def hash(self) -> str | None:

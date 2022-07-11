@@ -18,7 +18,7 @@ class TestTree(unittest.TestCase):
         self.assertEqual(bst.size, 0)
         self.assertEqual(bst.depth, 0)
         self.assertEqual(bst.nb_leaves, 0)
-        
+
         self.assertIsNone(bst.hash)
         self.assertIsNone(bst.root)
     
@@ -32,6 +32,18 @@ class TestTree(unittest.TestCase):
         self.assertEqual(bst.size, len(NODE_VALUES))
         self.assertEqual(bst.depth, DEPTH)
         self.assertEqual(bst.nb_leaves, NB_LEAVES)
+
+    def test_compare_init_insert(self) -> None:
+        """ Compare that instancing from a list or inserting produce same result. """
+
+        bst = MerkleTree()
+
+        for value in NODE_VALUES:
+            bst.insert(value)
+
+        bst1 = MerkleTree(NODE_VALUES)
+
+        self.assertEqual(bst, bst1)
 
 if __name__ == '__main__':
     unittest.main()
