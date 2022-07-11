@@ -33,7 +33,7 @@ def insert_in_binary_tree():
 def some_tree_metrics():
 
     bst = MerkleTree()
-    for val in ["salut", "i'm", "an", "anus", "abab", "jdj", "sas", "sass", "askas", "adzad"]:
+    for val in ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5']:
         bst.insert(val)
 
     print(bst)
