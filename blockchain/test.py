@@ -3,7 +3,7 @@ import unittest
 from user import User
 from lib.tree import MerkleTree
 
-NODE_VALUES = ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5']
+NODE_VALUES = ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5', 'VALUES6']
 DEPTH = 2
 NB_LEAVES = 3
 
@@ -11,6 +11,16 @@ class TestTree(unittest.TestCase):
     """ 
     This test class is used to test methods of the tree class
     """
+    def test_empty_tree(self) -> None:
+        """ Test metrics and method of empty tree. """
+        bst = MerkleTree()
+
+        self.assertEqual(bst.size, 0)
+        self.assertEqual(bst.depth, 0)
+        self.assertEqual(bst.nb_leaves, 0)
+        
+        self.assertIsNone(bst.hash)
+        self.assertIsNone(bst.root)
     
     def test_create_valid_tree(self) -> None:
         """ Test key metrics of valid tree. """
