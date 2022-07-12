@@ -52,7 +52,15 @@ def some_leaves():
     print(signature(Node))
     print(signature(Leaf))
     print(Leaf(hash("VALUE1")))
+    
+    bst = MerkleTree()
 
+    print(f"BST before insert: {bst}")
+
+    for val in ['VALUE1']:
+        bst.insert(val)
+
+    print(f"BST after insert: {bst}")
 
 if __name__ == "__main__":
     some_leaves()

@@ -19,7 +19,9 @@ class MerkleTree:
     def __post_init__(self, values: list[str] | None) -> None:
         """ Build the tree from list of values. """
 
-        if not values: return
+        if not values: 
+            self.__root = None
+            return
         
         leaves: list[Leaf] = [Leaf(value) for value in values]
         self.__root = self.__build_tree_recursive(leaves)
@@ -53,10 +55,10 @@ class MerkleTree:
         """ Number of leaves. """
         return self.__number_leaves_recursive(self.__root)
 
-    def __str__(self) -> str | None:
+    def __str__(self) -> str:
         """ Pretty print of tree. """
 
-        if not self.__root: return
+        if not self.__root: return ''
 
         return self.__to_string_recursive(self.__root)
     
