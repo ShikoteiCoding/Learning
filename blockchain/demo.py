@@ -1,7 +1,11 @@
 from lib.blockchain import Blockchain, TailBlock, mine_block
 
 from lib.tree import MerkleTree
-from lib.node import Leaf
+from lib.node import Node, Leaf
+
+from lib.utils import hash
+
+from inspect import signature
 
 def create_block_chain_without_users():
     """ Create and build blockchain without users. Simplistic scenario. """
@@ -45,7 +49,9 @@ def some_tree_metrics():
     #print(bst == bst1)
 
 def some_leaves():
-    print(Leaf("test"))
+    print(signature(Node))
+    print(signature(Leaf))
+    print(Leaf(hash("VALUE1")))
 
 
 if __name__ == "__main__":

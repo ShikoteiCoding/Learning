@@ -105,7 +105,7 @@ class MerkleTree:
         """ Add a node to the tree. In order insertion (not a BST, just a BT). """
 
         if not self.__root: 
-            self.__root = Node(hash(value))
+            self.__root = Leaf(hash(value))
         else:
             self.__insert_recursive(self.__root, value, None)
 

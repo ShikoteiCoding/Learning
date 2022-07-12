@@ -8,10 +8,18 @@ from .utils import hash_entries
 class Node:
     """ Node sub-element of Markle Tree """
     __value: str = field(init=True, repr=True)
-    __left: Node = field(init=True, repr=False)
-     # Right can be None if single child Node. Left can never be None in a Node.
+    __left: Node | None = field(init=True, repr=False, default=None)
+    # Right can be None if single child Node. Left can never be None in a Node.
     __right: Node | None = field(init=True, repr=False, default=None)
+    # Parent can be none and set later.
     __parent: Node | None = field(init=False, repr=False, default=None)
+
+    def __post_init__(self):
+        # Deal with parent linkage at the instanciation.
+        if self.__left:
+            self.__left.parent = self
+        if self.__right:
+            self.__right.parent = self
 
     @property
     def value(self) -> str:
@@ -24,7 +32,7 @@ class Node:
         self.__value = val
 
     @property
-    def left(self) -> Node:
+    def left(self) -> Node | None:
         """ The left child of the node. """
         return self.__left
 
@@ -85,15 +93,11 @@ class Node:
         Compute the hash from the left value and right value. 
         Double left value if no right value.
         """
+        if not self.__left: raise Exception("Node is a Leaf. Can't compute hash from non-existent children.")
         left_value = self.__left.value
         right_value = self.right.value if self.right else self.__left.value
         self.value = hash_entries(left_value, right_value)
 
 @dataclass(slots=True)
 class Leaf(Node):
-    """ Node sub-element of Markle Tree """
-    __value: str = field(init=True, repr=True)
-    __left: None = field(init=False, repr=False, default=None)
-    __right: None = field(init=False, repr=False, default=None)
-    # Parent can be initialized at None but set later.
-    __parent: Node | None = field(init=False, repr=False, default=None)
+    """ Leaf of a Tree. Node without children. """
