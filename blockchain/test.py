@@ -2,6 +2,9 @@ import unittest
 
 from user import User
 from lib.tree import MerkleTree
+from lib.node import Leaf
+
+from lib.utils import hash
 
 NODE_VALUES = ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5', 'VALUES6']
 DEPTH = 2
@@ -27,7 +30,7 @@ class TestTree(unittest.TestCase):
         bst = MerkleTree()
 
         for value in NODE_VALUES:
-            bst.insert(value)
+            bst.insert(Leaf(hash(value)))
 
         self.assertEqual(bst.size, len(NODE_VALUES))
         self.assertEqual(bst.depth, DEPTH)
@@ -39,7 +42,7 @@ class TestTree(unittest.TestCase):
         bst = MerkleTree()
 
         for value in NODE_VALUES:
-            bst.insert(value)
+            bst.insert(Leaf(hash(value)))
 
         bst1 = MerkleTree(NODE_VALUES)
 

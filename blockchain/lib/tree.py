@@ -103,19 +103,29 @@ class MerkleTree:
             curr.compute_hash()
             curr = curr.parent
 
-    def insert(self, value: str) -> None:
+    def insert(self, leaf: Leaf) -> None:
         """ Add a node to the tree. In order insertion (not a BST, just a BT). """
 
-        if not self.__root: 
-            self.__root = Leaf(hash(value))
+        if not self.__root:
+            self.__root = leaf
+            return
+
+        if self.__root.is_leaf:
+            print("it's a leaf biatch.")
+            left = self.__root
+            right = leaf
+            self.__root = Node(hash(left.value + right.value), left, right, None)
+
         else:
-            self.__insert_recursive(self.__root, value, None)
+            print("it's not a leaf biatch.")
+            subroot = self.__root
+            self.__root = Node(hash(subroot.value + leaf.value), subroot, leaf)
 
     def __insert_recursive(self, node: Node | None, value: str, parent: Node | None) -> Node:
         """ Recursive insertion in order (left first). """
 
         if node is None:
-            node = Node(hash(value), None, None, parent)
+            node = Leaf(hash(value), None, None, parent)
             self.__update_hash_ancestors(parent)
             return node
         

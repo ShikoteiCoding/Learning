@@ -26,13 +26,13 @@ def create_hashed_binary_tree():
 def insert_in_binary_tree():
 
     bst = MerkleTree()
-    bst.insert("hahade")
+    bst.insert(Leaf("hahade"))
     print(bst)
-    bst.insert("hahaded")
+    bst.insert(Leaf("hahaded"))
     print(bst)
-    bst.insert("haddhaded")
+    bst.insert(Leaf("haddhaded"))
     print(bst)
-    bst.insert("haddhaded")
+    bst.insert(Leaf("haddhaded"))
     print(bst)
 
 def some_tree_metrics():
@@ -58,9 +58,16 @@ def some_leaves():
     print(f"BST before insert: {bst}")
 
     for val in ['VALUE1']:
-        bst.insert(val)
+        bst.insert(Leaf(hash(val)))
 
     print(f"BST after insert: {bst}")
+
+    bst1 = MerkleTree()
+
+    for val in ['VALUE1', 'VALUE2', 'VALUE3']:
+        bst1.insert(Leaf(hash(val)))
+
+    print(bst1)
 
 if __name__ == "__main__":
     some_leaves()

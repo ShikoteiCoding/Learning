@@ -12,7 +12,7 @@ class Node:
     # Right can be None if single child Node. Left can never be None in a Node.
     __right: Node | None = field(init=True, repr=False, default=None)
     # Parent can be none and set later.
-    __parent: Node | None = field(init=False, repr=False, default=None)
+    __parent: Node | None = field(init=True, repr=False, default=None)
 
     def __post_init__(self):
         # Deal with parent linkage at the instanciation.
@@ -75,7 +75,7 @@ class Node:
     @property
     def is_leaf(self) -> bool:
         """ Return False for a Node. """
-        return False
+        return isinstance(self, Leaf)
 
     def __eq__(self, other: Node) -> bool:
         """ Return True if the hash is the same. """
