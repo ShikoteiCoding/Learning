@@ -100,4 +100,13 @@ class Node:
 
 @dataclass(slots=True)
 class Leaf(Node):
-    """ Leaf of a Tree. Node without children. """
+    """ Leaf of a Tree. Node without children. Used to browse the tree  more efficiently. """
+    __next: Leaf | None = field(init=True, repr=True, default=None)
+
+    @property
+    def next(self) -> Leaf | None:
+        return self.__next
+
+    @next.setter
+    def next(self, next: Leaf) -> None:
+        self.__next = next

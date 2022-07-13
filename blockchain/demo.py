@@ -69,5 +69,7 @@ def some_leaves():
 
     print(bst1)
 
+    print(Leaf(hash("VALUE1")))
+
 if __name__ == "__main__":
     some_leaves()
