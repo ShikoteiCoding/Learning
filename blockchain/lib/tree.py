@@ -23,8 +23,9 @@ class MerkleTree:
             self.__root = None
             return
         
-        leaves: list[Leaf] = [Leaf(value) for value in values]
-        self.__root = self.__build_tree_recursive(leaves)
+        leaves: list[Leaf] = [Leaf(hash(value)) for value in values]
+        for leaf in leaves:
+            self.insert(leaf)
 
     @property
     def hash(self) -> str | None:
@@ -42,6 +43,14 @@ class MerkleTree:
     def depth(self) -> int:
         """ Height of the tree. """
         return self.__depth_recursive(self.__root)
+    
+    def __depth_recursive(self, node: Node | None) -> int:
+        """ Recursively compute the size of a tree. """
+        if node is None:
+            return 0
+        if node.parent is not None:
+            return 1
+        return 1 + max(self.__depth_recursive(node.left), self.__depth_recursive(node.right))
 
     @property
     def size(self) -> int:
@@ -54,21 +63,6 @@ class MerkleTree:
     def nb_leaves(self) -> int:
         """ Number of leaves. """
         return self.__number_leaves_recursive(self.__root)
-
-    def __str__(self) -> str:
-        """ Pretty print of tree. """
-
-        if not self.__root: return ''
-
-        return self.__to_string_recursive(self.__root)
-    
-    def __depth_recursive(self, node: Node | None) -> int:
-        """ Recursively compute the size of a tree. """
-        if node is None:
-            return 0
-        if node.parent is not None:
-            return 1
-        return 1 + max(self.__depth_recursive(node.left), self.__depth_recursive(node.right))
     
     def __number_leaves_recursive(self, node: Node | None) -> int:
         """ Recursicvely compute the number of leaves. """
@@ -79,6 +73,13 @@ class MerkleTree:
             return 1
 
         return self.__number_leaves_recursive(node.left) + self.__number_leaves_recursive(node.right)
+
+    def __str__(self) -> str:
+        """ Pretty print of tree. """
+
+        if not self.__root: return ''
+
+        return self.__to_string_recursive(self.__root)
 
     def __build_tree_recursive(self, nodes: list[Leaf]) -> Node:
         """ Recursively build the nodes and their descendants. """
@@ -104,7 +105,7 @@ class MerkleTree:
             curr = curr.parent
 
     def insert(self, leaf: Leaf) -> None:
-        """ Add a node to the tree. In order insertion (not a BST, just a BT). """
+        """ Add a node to the tree. In order insertion. """
 
         if not self.__root:
             self.__root = leaf
