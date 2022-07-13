@@ -77,6 +77,20 @@ class Node:
         """ Return False for a Node. """
         return isinstance(self, Leaf)
 
+    @property
+    def is_left_child(self) -> bool:
+        """ Return if is left child of parent Node. """
+        if self.parent:
+            return self == self.parent.left
+        return False
+
+    @property
+    def is_right_child(self) -> bool:
+        """ Return if is left child of parent Node. """
+        if self.parent:
+            return self == self.parent.right
+        return False
+
     def __eq__(self, other: Node) -> bool:
         """ Return True if the hash is the same. """
         return self.__value == other.value
