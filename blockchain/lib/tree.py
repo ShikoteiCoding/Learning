@@ -111,15 +111,48 @@ class MerkleTree:
             return
 
         if self.__root.is_leaf:
-            print("it's a leaf biatch.")
             left = self.__root
-            right = leaf
-            self.__root = Node(hash(left.value + right.value), left, right, None)
+            self.__root = Node(hash(left.value + leaf.value), left, leaf, None)
 
         else:
-            print("it's not a leaf biatch.")
-            subroot = self.__root
-            self.__root = Node(hash(subroot.value + leaf.value), subroot, leaf)
+            last_leaf = self.inorder_leaf()
+            if last_leaf:
+                subroot = last_leaf.parent
+                left = Leaf(last_leaf.value)
+                right = leaf
+                intermediary = Node(hash(left.value + right.value), left, right, subroot)
+                
+                if last_leaf.is_left_child:
+                    subroot.left = intermediary
+                elif last_leaf.is_right_child:
+                    subroot.right = intermediary
+                left.parent = intermediary
+                right.parent = intermediary
+    
+    def inorder_leaf(self) -> Node | None:
+        """ Get the node whoch should receive the leaf. """
+        if self.__root is None:
+            return self.__root
+
+        return self.__search_subroot(self.__root)
+
+    def __search_subroot(self, node: Node | None, parent: Node | None = None) -> Node | None:
+        """ Recursive insertion in order (left first). """
+
+        #print("node: ", node, "parent: ", parent)
+
+        if node is None:
+            return parent
+        
+        if (node.right_count == node.left_count):
+            return self.__search_subroot(node.left, node)
+        
+        elif (node.right_count < node.left_count):
+
+            if (node.left_count % 2 == 1):
+                return self.__search_subroot(node.right, node)
+            else:
+                return self.__search_subroot(node.left, node)
 
     def __insert_recursive(self, node: Node | None, value: str, parent: Node | None) -> Node:
         """ Recursive insertion in order (left first). """

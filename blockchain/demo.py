@@ -49,27 +49,14 @@ def some_tree_metrics():
     #print(bst == bst1)
 
 def some_leaves():
-    print(signature(Node))
-    print(signature(Leaf))
-    print(Leaf(hash("VALUE1")))
-    
-    bst = MerkleTree()
-
-    print(f"BST before insert: {bst}")
-
-    for val in ['VALUE1']:
-        bst.insert(Leaf(hash(val)))
-
-    print(f"BST after insert: {bst}")
 
     bst1 = MerkleTree()
 
-    for val in ['VALUE1', 'VALUE2', 'VALUE3']:
+    for val in ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5', 'VALUE6', 'VALUE7']:
+        print("Insert:", bst1)
         bst1.insert(Leaf(hash(val)))
 
-    print(bst1)
-
-    print(Leaf(hash("VALUE1")))
+    print("Last:", bst1)
 
 if __name__ == "__main__":
     some_leaves()
