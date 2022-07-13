@@ -93,7 +93,7 @@ class Node:
 
     def __eq__(self, other: Node) -> bool:
         """ Return True if the hash is the same. """
-        return self.__value == other.value
+        return self.__value == other.__value
 
     def __count_recursive(self, node: Node | None) -> int:
         """ Compute the number of child in the node provided. """
@@ -108,9 +108,9 @@ class Node:
         Double left value if no right value.
         """
         if not self.__left: raise Exception("Node is a Leaf. Can't compute hash from non-existent children.")
-        left_value = self.__left.value
-        right_value = self.right.value if self.right else self.__left.value
-        self.value = hash_entries(left_value, right_value)
+        left_value = self.__left.__value
+        right_value = self.__right.__value if self.__right else self.__left.__value
+        self.__value = hash_entries(left_value, right_value)
 
 @dataclass(slots=True)
 class Leaf(Node):
