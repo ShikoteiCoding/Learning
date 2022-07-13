@@ -3,7 +3,7 @@ from lib.blockchain import Blockchain, TailBlock, mine_block
 from lib.tree import MerkleTree
 from lib.node import Node, Leaf
 
-from lib.utils import hash
+from lib.utils import hash, hash_entries
 
 from inspect import signature
 
@@ -38,25 +38,30 @@ def insert_in_binary_tree():
 def some_tree_metrics():
 
     bst = MerkleTree()
-    #for val in ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5']:
-    #    bst.insert(val)
 
     bst1 = MerkleTree(['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5'])
-
-    #print(bst)
     print(bst1)
-
-    #print(bst == bst1)
 
 def some_leaves():
 
     bst1 = MerkleTree()
 
-    for val in ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5', 'VALUE6', 'VALUE7']:
+    for val in ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5', 'VALUE6']:
         print("Insert:", bst1)
         bst1.insert(Leaf(hash(val)))
 
     print("Last:", bst1)
 
+def node_compare():
+
+    LEAF_VALUES = ['VALUE1', 'VALUE2']
+
+    node = Node(hash_entries(hash(LEAF_VALUES[0]), hash(LEAF_VALUES[1])))
+
+    node1 = Node('', Leaf(hash(LEAF_VALUES[0])), Leaf(hash(LEAF_VALUES[1])))
+    node1.compute_hash()
+
+    print(node, node1)
+
 if __name__ == "__main__":
-    some_leaves()
+    node_compare()
