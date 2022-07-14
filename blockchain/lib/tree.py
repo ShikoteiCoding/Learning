@@ -74,13 +74,6 @@ class MerkleTree:
 
         return self.__number_leaves_recursive(node.left) + self.__number_leaves_recursive(node.right)
 
-    def __str__(self) -> str:
-        """ Pretty print of tree. """
-
-        if not self.__root: return ''
-
-        return self.__to_string_recursive(self.__root)
-
     def __build_tree_recursive(self, nodes: list[Leaf]) -> Node:
         """ Recursively build the nodes and their descendants. """
 
@@ -104,6 +97,43 @@ class MerkleTree:
             curr.compute_hash()
             curr = curr.parent
 
+    def insert_improved(self, leaf: Leaf) -> None:
+        """ """
+        last_leaf = self.get_inorder_leaf()
+
+        if not last_leaf:
+            self.__root = leaf
+            return
+
+        fork_node, uprooted_leaf, position = self.uproot_leaf(last_leaf)
+        print(fork_node, uprooted_leaf, position)
+
+        subroot = Node(hash(uprooted_leaf.value + leaf.value), uprooted_leaf, leaf, fork_node)
+
+        if not fork_node:
+            self.__root = subroot
+            return
+
+        if position == 'left':
+            fork_node.left = subroot
+        if position == 'right':
+            fork_node.right = subroot
+        
+    def uproot_leaf(self, leaf: Leaf) -> tuple[Node | None, Leaf, str]:
+        """ Uproot relations between a Leaf and a Parent Node. """
+        if not leaf.parent:
+            return leaf.parent, leaf, 'left'
+
+        parent = leaf.parent
+        leaf.parent = None
+
+        if leaf.is_left_child:
+            parent.left = None
+            return parent, leaf, 'left'
+        else:
+            parent.right = None
+            return parent, leaf, 'right'
+
     def insert(self, leaf: Leaf) -> None:
         """ Add a node to the tree. In order insertion. """
 
@@ -116,7 +146,7 @@ class MerkleTree:
             self.__root = Node(hash(left.value + leaf.value), left, leaf, None)
 
         else:
-            last_leaf = self.inorder_leaf()
+            last_leaf = self.get_inorder_leaf()
             if last_leaf:
                 subroot = last_leaf.parent
                 left = Leaf(last_leaf.value)
@@ -130,50 +160,28 @@ class MerkleTree:
                 left.parent = intermediary
                 right.parent = intermediary
     
-    def inorder_leaf(self) -> Node | None:
+    def get_inorder_leaf(self) -> Leaf | None:
         """ Get the node whoch should receive the leaf. """
         if self.__root is None:
             return self.__root
 
-        return self.__search_subroot(self.__root)
+        return self.__inorder_leaf_recursive(self.__root)
 
-    def __search_subroot(self, node: Node | None, parent: Node | None = None) -> Node | None:
+    def __inorder_leaf_recursive(self, node: Node | None, parent: Node | None = None) -> Leaf | None:
         """ Recursive insertion in order (left first). """
 
-        #print("node: ", node, "parent: ", parent)
-
         if node is None:
-            return parent
+            return parent # type: ignore
         
         if (node.right_count == node.left_count):
-            return self.__search_subroot(node.left, node)
+            return self.__inorder_leaf_recursive(node.left, node)
         
         elif (node.right_count < node.left_count):
 
             if (node.left_count % 2 == 1):
-                return self.__search_subroot(node.right, node)
+                return self.__inorder_leaf_recursive(node.right, node)
             else:
-                return self.__search_subroot(node.left, node)
-
-    def __insert_recursive(self, node: Node | None, value: str, parent: Node | None) -> Node:
-        """ Recursive insertion in order (left first). """
-
-        if node is None:
-            node = Leaf(hash(value), None, None, parent)
-            self.__update_hash_ancestors(parent)
-            return node
-        
-        if (node.right_count == node.left_count):
-            node.left = self.__insert_recursive(node.left, value, node)
-        
-        elif (node.right_count < node.left_count):
-
-            if (node.left_count % 2 == 1):
-                node.right = self.__insert_recursive(node.right, value, node)
-            else:
-                node.left = self.__insert_recursive(node.left, value, node)
-    
-        return node
+                return self.__inorder_leaf_recursive(node.left, node)
 
     def find_value(self, value: str) -> None:
         """ Find a node and returns it's position. """
@@ -181,6 +189,13 @@ class MerkleTree:
 
     def find_hash(self, hash: str) -> None:
         raise NotImplementedError()
+
+    def __str__(self) -> str:
+        """ Pretty print of tree. """
+
+        if not self.__root: return f'\n{L_BRACKET_LONG} None'
+
+        return self.__to_string_recursive(self.__root)
 
     def __to_string_recursive(self, node: Node, depth: int = 0, indent: int = 3, 
             ignored: list = [], is_right: bool = False, is_left: bool = False) -> str:

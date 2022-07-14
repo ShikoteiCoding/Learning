@@ -37,7 +37,7 @@ class Node:
         return self.__left
 
     @left.setter
-    def left(self, node: Node) -> None:
+    def left(self, node: Node | None) -> None:
         """ Set the left child of the node. """
         self.__left = node
 
@@ -47,7 +47,7 @@ class Node:
         return self.__right
 
     @right.setter
-    def right(self, node: Node) -> None:
+    def right(self, node: Node | None) -> None:
         """ Set the left child of the node. """
         self.__right = node
 
@@ -57,7 +57,7 @@ class Node:
         return self.__parent
     
     @parent.setter
-    def parent(self, node: Node) -> None:
+    def parent(self, node: Node | None) -> None:
         """ Set the parent node. """
         self.__parent = node
 

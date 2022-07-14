@@ -37,10 +37,18 @@ def insert_in_binary_tree():
 
 def some_tree_metrics():
 
+    bst1 = MerkleTree()
     bst = MerkleTree()
 
-    bst1 = MerkleTree(['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5'])
+    for val in ['VALUE1', 'VALUE2', 'VALUE3']:
+        print("Insert:", bst1, bst)
+        bst1.insert_improved(Leaf(val))
+        bst.insert(Leaf(val))
+
     print(bst1)
+    print(bst)
+
+    
 
 def some_leaves():
 
@@ -64,4 +72,4 @@ def node_compare():
     print(node, node1)
 
 if __name__ == "__main__":
-    node_compare()
+    some_tree_metrics()
