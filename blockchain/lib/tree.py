@@ -178,8 +178,7 @@ class MerkleTree:
 
         return self.__to_string_recursive(self.__root)
 
-    def __to_string_recursive(self, node: Node, depth: int = 0, indent: int = 3, 
-            ignored: list = [], is_right: bool = False, is_left: bool = False) -> str:
+    def __to_string_recursive(self, node: Node, depth: int = 0, indent: int = 3, ignored: list = []) -> str:
 
         out: str = ''
 
@@ -194,19 +193,19 @@ class MerkleTree:
             out += indent * ' '
             count += 1
 
-        if is_left:
+        if node.is_left_child:
             out += f' {T_BRACKET}'
-        if is_right:
+        if node.is_right_child:
             out += f' {L_BRACKET_LONG}'
             ignored.append(depth)
         
-        out += f"{node.value} ({'right' if is_right == True else 'left'})\n "
+        out += f"{node.value} ({node.position})\n "
 
         args = (depth + 1, indent, ignored.copy())
 
         if node.left:
-            out += self.__to_string_recursive(node.left, *args, is_left=True)
+            out += self.__to_string_recursive(node.left, *args)
         if node.right:
-            out += self.__to_string_recursive(node.right, *args, is_right=True)
+            out += self.__to_string_recursive(node.right, *args)
 
         return out

@@ -91,6 +91,12 @@ class Node:
             return self == self.parent.right
         return False
 
+    @property
+    def position(self) -> str:
+        if self.is_left_child: return 'left'
+        elif self.is_right_child: return 'right'
+        else: return 'no parent'
+
     def __eq__(self, other: Node) -> bool:
         """ Return True if the hash is the same. """
         return self.__value == other.__value
