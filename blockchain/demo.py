@@ -26,13 +26,13 @@ def create_hashed_binary_tree():
 def insert_in_binary_tree():
 
     bst = MerkleTree()
-    bst.insert(Leaf("hahade"))
+    bst.insert_old(Leaf("hahade"))
     print(bst)
-    bst.insert(Leaf("hahaded"))
+    bst.insert_old(Leaf("hahaded"))
     print(bst)
-    bst.insert(Leaf("haddhaded"))
+    bst.insert_old(Leaf("haddhaded"))
     print(bst)
-    bst.insert(Leaf("haddhaded"))
+    bst.insert_old(Leaf("haddhaded"))
     print(bst)
 
 def some_tree_metrics():
@@ -40,12 +40,13 @@ def some_tree_metrics():
     bst1 = MerkleTree()
     bst = MerkleTree()
 
-    for val in ['VALUE1', 'VALUE2', 'VALUE3']:
-        print("Insert:", bst1, bst)
+    for val in ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5', 'VALUE6']:
+        bst.insert_old(Leaf(val))
+        #print("Old version of inserting:", bst)
         bst1.insert_improved(Leaf(val))
-        bst.insert(Leaf(val))
+        print("New version of inserting:", bst1)
 
-    print(bst1)
+    print(bst == bst1)
     print(bst)
 
     
@@ -56,7 +57,7 @@ def some_leaves():
 
     for val in ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5', 'VALUE6']:
         print("Insert:", bst1)
-        bst1.insert(Leaf(hash(val)))
+        bst1.insert_old(Leaf(hash(val)))
 
     print("Last:", bst1)
 

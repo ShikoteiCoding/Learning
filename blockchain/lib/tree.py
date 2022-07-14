@@ -1,4 +1,5 @@
 from dataclasses import InitVar, dataclass, field
+from enum import Enum, auto
 import re
 from .node import Node, Leaf
 from .utils import hash
@@ -7,6 +8,10 @@ L_BRACKET_SHORT = '└─'
 L_BRACKET_LONG = '└──'
 T_BRACKET = '├──'
 VERTICAL_BAR = '│'
+
+class POSITION(Enum):
+    RIGHT = auto()
+    LEFT = auto()
 
 @dataclass
 class MerkleTree:
@@ -25,7 +30,7 @@ class MerkleTree:
         
         leaves: list[Leaf] = [Leaf(hash(value)) for value in values]
         for leaf in leaves:
-            self.insert(leaf)
+            self.insert_old(leaf)
 
     @property
     def hash(self) -> str | None:
@@ -100,13 +105,16 @@ class MerkleTree:
     def insert_improved(self, leaf: Leaf) -> None:
         """ """
         last_leaf = self.get_inorder_leaf()
+        print("\nLast leaf:", last_leaf, last_leaf.is_left_child if last_leaf else None)
 
         if not last_leaf:
             self.__root = leaf
             return
 
         fork_node, uprooted_leaf, position = self.uproot_leaf(last_leaf)
-        print(fork_node, uprooted_leaf, position)
+        print(f"Fork Nodefork_node: {fork_node}")
+        print(f"Uprooted Leaf: {uprooted_leaf}")
+        print(f"Position: {position}")
 
         subroot = Node(hash(uprooted_leaf.value + leaf.value), uprooted_leaf, leaf, fork_node)
 
@@ -114,27 +122,32 @@ class MerkleTree:
             self.__root = subroot
             return
 
-        if position == 'left':
+        if position == POSITION.LEFT:
             fork_node.left = subroot
-        if position == 'right':
+        if position == POSITION.RIGHT:
             fork_node.right = subroot
         
-    def uproot_leaf(self, leaf: Leaf) -> tuple[Node | None, Leaf, str]:
+    def uproot_leaf(self, leaf: Leaf) -> tuple[Node | None, Leaf, POSITION]:
         """ Uproot relations between a Leaf and a Parent Node. """
         if not leaf.parent:
-            return leaf.parent, leaf, 'left'
+            return leaf.parent, leaf, POSITION.LEFT
 
-        parent = leaf.parent
-        leaf.parent = None
+        parent: Node = leaf.parent
+        position: POSITION
 
         if leaf.is_left_child:
+            print("I'm left")
             parent.left = None
-            return parent, leaf, 'left'
+            position = POSITION.LEFT
         else:
+            print("I'm not left")
             parent.right = None
-            return parent, leaf, 'right'
+            position = POSITION.RIGHT
 
-    def insert(self, leaf: Leaf) -> None:
+        leaf.parent = None
+        return parent, leaf, position
+    
+    def insert_old(self, leaf: Leaf) -> None:
         """ Add a node to the tree. In order insertion. """
 
         if not self.__root:
@@ -147,6 +160,7 @@ class MerkleTree:
 
         else:
             last_leaf = self.get_inorder_leaf()
+            print(last_leaf)
             if last_leaf:
                 subroot = last_leaf.parent
                 left = Leaf(last_leaf.value)
