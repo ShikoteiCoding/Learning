@@ -72,7 +72,7 @@ class TestTree(unittest.TestCase):
         bst = MerkleTree()
 
         for value in LEAF_VALUES:
-            bst.insert_old(Leaf(hash(value)))
+            bst.insert(Leaf(hash(value)))
 
         self.assertEqual(bst.size, SIZE)
         self.assertEqual(bst.depth, DEPTH)
@@ -84,7 +84,7 @@ class TestTree(unittest.TestCase):
         bst = MerkleTree()
 
         for value in LEAF_VALUES:
-            bst.insert_old(Leaf(hash(value)))
+            bst.insert(Leaf(hash(value)))
 
         bst1 = MerkleTree(LEAF_VALUES)
 

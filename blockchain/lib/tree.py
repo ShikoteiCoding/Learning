@@ -30,7 +30,7 @@ class MerkleTree:
         
         leaves: list[Leaf] = [Leaf(hash(value)) for value in values]
         for leaf in leaves:
-            self.insert_old(leaf)
+            self.insert(leaf)
 
     @property
     def hash(self) -> str | None:
@@ -142,11 +142,9 @@ class MerkleTree:
         position: POSITION
 
         if leaf.is_left_child:
-            print("I'm left")
             parent.left = None
             position = POSITION.LEFT
         else:
-            print("I'm not left")
             parent.right = None
             position = POSITION.RIGHT
 
@@ -166,7 +164,6 @@ class MerkleTree:
 
         else:
             last_leaf = self.get_inorder_leaf()
-            print(last_leaf)
             if last_leaf:
                 subroot = last_leaf.parent
                 left = Leaf(last_leaf.value)
@@ -211,7 +208,7 @@ class MerkleTree:
         raise NotImplementedError()
 
     def __str__(self) -> str:
-        """ Pretty print of tree. """
+        """ Pretty printter of tree. """
 
         if not self.__root: return f'\n{L_BRACKET_LONG} None'
 
