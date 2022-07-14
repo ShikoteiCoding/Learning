@@ -79,13 +79,6 @@ class MerkleTree:
 
         return self.__number_leaves_recursive(node.left) + self.__number_leaves_recursive(node.right)
 
-    def __update_hash_ancestors(self, node: Node | None) -> None:
-        """ Given a node, update the hash from leaf to root. """
-        curr = node
-        while curr:
-            curr.compute_hash()
-            curr = curr.parent
-
     def insert(self, leaf: Leaf) -> None:
         """ Insertion of a new Leaf in the tree"""
 
@@ -122,6 +115,7 @@ class MerkleTree:
         """ 
         DEPRECATED: PLEASE USE REGULAR INSERT.
         Add a node to the tree. In order insertion. 
+        Plus not working: no update of nodes.
         """
 
         if not self.__root:

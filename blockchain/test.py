@@ -7,6 +7,7 @@ from lib.node import Node, Leaf
 from lib.utils import hash, hash_entries
 
 LEAF_VALUES = ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5', 'VALUES6']
+LEAF_HASHES = [hash(value) for value in LEAF_VALUES]
 DEPTH = 2
 NB_LEAVES = 6
 SIZE = 11
@@ -89,6 +90,16 @@ class TestTree(unittest.TestCase):
         bst1 = MerkleTree(LEAF_VALUES)
 
         self.assertEqual(bst, bst1)
+
+    def test_hash_tree(self) -> None:
+        """ Compare that the hashes are expected. """
+        bst = MerkleTree()
+        bst.insert(Leaf(hash(LEAF_VALUES[0])))
+
+        self.assertEqual(bst.hash, LEAF_HASHES[0])
+
+        bst.insert(Leaf(hash(LEAF_VALUES[1])))
+        self.assertEqual(bst.hash, hash_entries(LEAF_HASHES[0], LEAF_HASHES[1]))
 
 if __name__ == '__main__':
     unittest.main()

@@ -40,10 +40,9 @@ def some_tree_metrics():
     bst1 = MerkleTree()
     bst = MerkleTree()
 
-    for val in ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5', 'VALUE6']:
+    for val in ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5', 'VALUE6', 'VALUE7']:
         bst.insert_old(Leaf(hash(val)))
-        #print("Old version of inserting:", bst)
-        bst1.insert(Leaf(val))
+        bst1.insert(Leaf(hash(val)))
         print("New version of inserting:", bst1)
 
     print(bst == bst1)
