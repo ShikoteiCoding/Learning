@@ -43,9 +43,8 @@ def some_tree_metrics():
     for val in ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5', 'VALUE6']:
         bst.insert_old(Leaf(hash(val)))
         #print("Old version of inserting:", bst)
-        bst1.insert(Leaf(hash(val)))
+        bst1.insert(Leaf(val))
         print("New version of inserting:", bst1)
-    print(bst)
 
     print(bst == bst1)
 

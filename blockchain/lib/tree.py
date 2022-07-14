@@ -28,7 +28,7 @@ class MerkleTree:
             self.__root = None
             return
         
-        leaves: list[Leaf] = [Leaf(hash(value)) for value in values]
+        leaves = [Leaf(hash(value)) for value in values]
         for leaf in leaves:
             self.insert(leaf)
 
@@ -79,22 +79,6 @@ class MerkleTree:
 
         return self.__number_leaves_recursive(node.left) + self.__number_leaves_recursive(node.right)
 
-    def __build_tree_recursive(self, nodes: list[Leaf]) -> Node:
-        """ Recursively build the nodes and their descendants. """
-
-        pivot: int = len(nodes) // 2
-
-        if len(nodes) == 2:
-            return Node(hash(nodes[0].value + nodes[1].value), nodes[0], nodes[1])
-        if len(nodes) == 1:
-            return Node(hash(nodes[0].value), nodes[0])
-
-        left: Node = self.__build_tree_recursive(nodes[pivot:])
-        right: Node = self.__build_tree_recursive(nodes[:pivot])
-        value: str = hash(left.value + right.value)
-
-        return Node(value, left, right)
-
     def __update_hash_ancestors(self, node: Node | None) -> None:
         """ Given a node, update the hash from leaf to root. """
         curr = node
@@ -112,11 +96,12 @@ class MerkleTree:
             self.__root = leaf
             return
 
-        # Fork the found leaf of it's hierarchy
-        fork_node, uprooted_leaf, position = self.uproot_leaf(last_leaf)
+        # Keep the position before uprooting the leaf of its ancestor's branch
+        position = POSITION.LEFT if (last_leaf.is_left_child or last_leaf.parent is None) else POSITION.RIGHT
+        fork_node = last_leaf.parent
 
         # Create the new branch and attach the leaves (the one uprooted and the one inserted)
-        subroot = Node(hash(uprooted_leaf.value + leaf.value), uprooted_leaf, leaf, fork_node)
+        subroot = Node(hash(last_leaf.value + leaf.value), last_leaf, leaf, fork_node)
 
         if not fork_node:
             self.__root = subroot
@@ -132,27 +117,12 @@ class MerkleTree:
         while curr:
             curr.compute_hash()
             curr = curr.parent
-        
-    def uproot_leaf(self, leaf: Leaf) -> tuple[Node | None, Leaf, POSITION]:
-        """ Uproot relations between a Leaf and a Parent Node. """
-        if not leaf.parent:
-            return leaf.parent, leaf, POSITION.LEFT
-
-        parent: Node = leaf.parent
-        position: POSITION
-
-        if leaf.is_left_child:
-            parent.left = None
-            position = POSITION.LEFT
-        else:
-            parent.right = None
-            position = POSITION.RIGHT
-
-        leaf.parent = None
-        return parent, leaf, position
     
     def insert_old(self, leaf: Leaf) -> None:
-        """ Add a node to the tree. In order insertion. """
+        """ 
+        DEPRECATED: PLEASE USE REGULAR INSERT.
+        Add a node to the tree. In order insertion. 
+        """
 
         if not self.__root:
             self.__root = leaf
@@ -171,9 +141,9 @@ class MerkleTree:
                 intermediary = Node(hash(left.value + right.value), left, right, subroot)
                 
                 if last_leaf.is_left_child:
-                    subroot.left = intermediary
+                    subroot.left = intermediary #type: ignore
                 elif last_leaf.is_right_child:
-                    subroot.right = intermediary
+                    subroot.right = intermediary #type: ignore
                 left.parent = intermediary
                 right.parent = intermediary
     
