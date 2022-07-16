@@ -26,30 +26,34 @@ class Testnode(unittest.TestCase):
 
         node = Node(digest(LEAF_VALUES[0]))
 
-        self.assertEqual(node.left, None)
-        self.assertEqual(node.right, None)
-        self.assertEqual(node.parent, None)
+        self.assertIsNone(node.left)
+        self.assertIsNone(node.right)
+        self.assertIsNone(node.parent)
+
         self.assertEqual(node.value, digest(LEAF_VALUES[0]))
         self.assertEqual(node.left_count, 0)
         self.assertEqual(node.right_count, 0)
-        self.assertEqual(node.is_leaf, False)
-        self.assertEqual(node.is_right_child, False)
-        self.assertEqual(node.is_left_child, False)
+
+        self.assertFalse(node.is_leaf)
+        self.assertFalse(node.is_right_child)
+        self.assertFalse(node.is_left_child)
     
     def test_valid_satellite_leaf(self) -> None:
         """ Test properties of leaf without relations. """
 
         leaf = Leaf(digest(LEAF_VALUES[0]))
 
-        self.assertEqual(leaf.left, None)
-        self.assertEqual(leaf.right, None)
-        self.assertEqual(leaf.parent, None)
+        self.assertIsNone(leaf.left)
+        self.assertIsNone(leaf.right)
+        self.assertIsNone(leaf.parent)
+
         self.assertEqual(leaf.value, digest(LEAF_VALUES[0]))
         self.assertEqual(leaf.left_count, 0)
         self.assertEqual(leaf.right_count, 0)
-        self.assertEqual(leaf.is_leaf, True)
-        self.assertEqual(leaf.is_right_child, False)
-        self.assertEqual(leaf.is_left_child, False)
+
+        self.assertTrue(leaf.is_leaf)
+        self.assertFalse(leaf.is_right_child)
+        self.assertFalse(leaf.is_left_child)
 
     def test_valid_parent_node(self) -> None:
         """ Test properties of node without relations. """
@@ -63,57 +67,51 @@ class Testnode(unittest.TestCase):
         root_node.digest_hashes()
 
         # Test node properties
+        self.assertIsNone(root_node.parent)
+
         self.assertEqual(root_node.left, left_leaf)
         self.assertEqual(root_node.right, right_leaf)
-        self.assertEqual(root_node.parent, None)
         self.assertEqual(root_node.value, digest_double_entries(left_leaf.value, right_leaf.value))
         self.assertEqual(root_node.left_count, 1)
         self.assertEqual(root_node.right_count, 1)
-        self.assertEqual(root_node.is_leaf, False)
-        self.assertEqual(root_node.is_right_child, False)
-        self.assertEqual(root_node.is_left_child, False)
+
+        self.assertFalse(root_node.is_leaf)
+        self.assertFalse(root_node.is_right_child)
+        self.assertFalse(root_node.is_left_child)
 
         # Test children properties
-        self.assertEqual(left_leaf.left, None)
-        self.assertEqual(left_leaf.right, None)
+        self.assertIsNone(left_leaf.left)
+        self.assertIsNone(left_leaf.right)
+
         self.assertEqual(left_leaf.parent, root_node)
         self.assertEqual(left_leaf.value, digest(LEAF_VALUES[0]))
         self.assertEqual(left_leaf.left_count, 0)
         self.assertEqual(left_leaf.right_count, 0)
-        self.assertEqual(left_leaf.is_leaf, True)
-        self.assertEqual(left_leaf.is_right_child, False)
-        self.assertEqual(left_leaf.is_left_child, True)
 
-        self.assertEqual(right_leaf.left, None)
-        self.assertEqual(right_leaf.right, None)
+        self.assertTrue(left_leaf.is_leaf)
+        self.assertFalse(left_leaf.is_right_child)
+        self.assertTrue(left_leaf.is_left_child)
+
+        self.assertIsNone(right_leaf.left)
+        self.assertIsNone(right_leaf.right)
+
         self.assertEqual(right_leaf.parent, root_node)
         self.assertEqual(right_leaf.value, digest(LEAF_VALUES[1]))
         self.assertEqual(right_leaf.left_count, 0)
         self.assertEqual(right_leaf.right_count, 0)
-        self.assertEqual(right_leaf.is_leaf, True)
-        self.assertEqual(right_leaf.is_right_child, True)
-        self.assertEqual(right_leaf.is_left_child, False)
 
-    def test_node_hash(self) -> None:
-        """ Test hashes from node init or leaf bottom-up digest. """
-        # Define a node without children but a hash (just for testing)
-        detached_node = Node(digest_double_entries(digest(LEAF_VALUES[0]), digest(LEAF_VALUES[1])))
-
-        # Define a node with leaf children and digest the bottom-up hashes
-        parent_node = Node('', Leaf(digest(LEAF_VALUES[0])), Leaf(digest(LEAF_VALUES[1])))
-        parent_node.digest_hashes()
-
-        self.assertEqual(detached_node, parent_node)
-        self.assertEqual(detached_node.value, digest_double_entries(digest(LEAF_VALUES[0]), digest(LEAF_VALUES[1])))
-        self.assertEqual(parent_node.value, digest_double_entries(digest(LEAF_VALUES[0]), digest(LEAF_VALUES[1])))
-
+        self.assertTrue(right_leaf.is_leaf)
+        self.assertTrue(right_leaf.is_right_child)
+        self.assertFalse(right_leaf.is_left_child)
 
 class TestTree(unittest.TestCase):
     """ 
     This test class is used to test methods of the tree class
     """
+
     def test_empty_tree(self) -> None:
         """ Test properties of empty tree. """
+
         bst = MerkleTree()
 
         self.assertEqual(bst.size, 0)
