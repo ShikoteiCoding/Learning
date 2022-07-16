@@ -62,11 +62,12 @@ def create_blockchain_without_users():
     """ Create and build blockchain without users. Simplistic scenario. """
 
     bc = Blockchain()
-    head = bc.create_genesis_block()
+    bc.create_genesis_block()
 
-    b1 = bc.add_block(Block(head.hash, "", datetime.now(), Data()).compute_hash())
-    b2 = bc.add_block(Block(b1.hash, "", datetime.now(), Data()).compute_hash())
-
+    for _ in range(0, 5):
+        bc.add_transaction("I'm a transaction")
+        bc.mine()
+    
     print(bc)
 
 

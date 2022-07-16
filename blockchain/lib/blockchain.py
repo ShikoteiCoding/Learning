@@ -17,13 +17,14 @@ class Blockchain:
     tail: Block | None = field(init=False, repr=False, default=None)
     head: Block | None = field(init=False, repr=False, default=None)
 
+    __transaction_queue: list[str] = field(init=False, repr=False, default_factory = list)
     __nounce: str = field(init=False, default="")
     __size: int = field(init=False, default=0)
 
     def create_genesis_block(self) -> Block:
         """ Genesis Block. First block. """
         block = Block("", self.__nounce, datetime.now(), Data())
-        self.__append_block(block.compute_hash())
+        self.add_block(block.compute_hash())
         return block
 
     def add_block(self, block: Block) -> Block:
@@ -32,27 +33,44 @@ class Blockchain:
             block.hash
         except (AttributeError) as error:
             raise NotDigestedBlock(f"Block provided has not been hashed yet. {error}")
-        return self.__append_block(block)
-    
-    def __append_block(self, block: Block) -> Block:
+
         if not self.block_is_valid(block):
             raise NotProvedBlock(f"Block provided does not contain proof. Nounce is {self.__nounce}. ")
         
         if not self.tail or not self.head:
             self.tail = block
-            self.head = block
-            return self.head
-        
-        Block.link_blocks(self.head, block)
+        else:
+            Block.link_blocks(self.head, block)
 
         self.head = block
         self.__size += 1
-
         return self.head
 
     def block_is_valid(self, block: Block) -> bool:
         """ Verify the block hash with the current nounce. """
         return block.hash.startswith(self.__nounce)
+
+    def add_transaction(self, transaction: str) -> None:
+        """ Add a transaction in the queue. """
+        self.__transaction_queue.append(transaction)
+
+    def mine(self) -> None:
+        if not self.__transaction_queue:
+            return 
+        
+        last_block = self.last_block
+
+        if not last_block: return
+
+        block = Block(
+            last_block.hash,
+            self.__nounce,
+            datetime.now(),
+            Data(str(self.__transaction_queue))
+        ).compute_hash()
+
+        self.add_block(block)
+        self.__transaction_queue = []
 
     @property
     def last_block(self) -> Block | None:
