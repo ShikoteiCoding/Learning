@@ -1,11 +1,12 @@
 from lib.blockchain import Blockchain
+from lib.block import Block, Data
 
 from lib.tree import MerkleTree
 from lib.node import Node, Leaf
 
 from lib.utils import digest, digest_double_entries
 
-from inspect import signature
+from datetime import datetime
 
 def create_hashed_binary_tree():
     """ Create a binary tree from arbitrary list of data. """
@@ -61,7 +62,10 @@ def create_blockchain_without_users():
     """ Create and build blockchain without users. Simplistic scenario. """
 
     bc = Blockchain()
-    bc.create_genesis_block()
+    head = bc.create_genesis_block()
+
+    bc.add_block(Block(head.hash, "", datetime.now(), Data()).compute_hash())
+    bc.add_block(Block(head.hash, "", datetime.now(), Data()).compute_hash())
 
     print(bc)
 
