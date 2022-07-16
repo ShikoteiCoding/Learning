@@ -1,4 +1,4 @@
-from lib.blockchain import Blockchain, TailBlock, mine_block
+from lib.blockchain import Blockchain
 
 from lib.tree import MerkleTree
 from lib.node import Node, Leaf
@@ -6,17 +6,6 @@ from lib.node import Node, Leaf
 from lib.utils import digest, digest_double_entries
 
 from inspect import signature
-
-def create_block_chain_without_users():
-    """ Create and build blockchain without users. Simplistic scenario. """
-
-    bc = Blockchain(TailBlock())
-    first_block, first_proof = mine_block(bc.head.hash, "transactions first block", bc.nounce)
-    print(bc.forge(first_block, first_proof))
-    scd_block, scd_proof = mine_block(bc.head.hash, "transactions scd block", bc.nounce)
-    print(bc.forge(scd_block, scd_proof))
-
-    print(bc)
 
 def create_hashed_binary_tree():
     """ Create a binary tree from arbitrary list of data. """
@@ -68,5 +57,14 @@ def node_compare():
 
     print(node, node1)
 
+def create_blockchain_without_users():
+    """ Create and build blockchain without users. Simplistic scenario. """
+
+    bc = Blockchain()
+    bc.create_genesis_block()
+
+    print(bc)
+
+
 if __name__ == "__main__":
-    some_tree_metrics()
+    create_blockchain_without_users()

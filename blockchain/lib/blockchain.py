@@ -3,92 +3,89 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 
-def fake_hash() -> str:
-    return "abxx"
-
-def mine_block(previous_hash: str, transactions: str, nounce: str) -> tuple[Block, str]:
-    """ Mining encapsulation. Simplistic version waiting for API """
-    return Block(previous_hash, Data(transactions), nounce, fake_hash()), "fake proof"
-
 class WrongBlockError(Exception):
     ...
 
 @dataclass
 class Data:
     """ Data contained in a block. """
+    # Should it be where  the merkle tree is placed ?
+    # Need further documentation
     transactions: str = field(init=True, default="")
 
-@dataclass
+@dataclass(slots=True)
 class Block:
     """ Block storing class. """
-    previous_hash: str = field(init=True)
-    data: Data = field(init=True)
-    nounce: str = field(init=True)
-    hash: str = field(init=True)
 
-    _prev: Block = field(init=False, repr=False)
-    _next: None | Block = field(init=False, default=None, repr=False)
+    previous_hash: str  = field(init=True)
+    nounce: str         = field(init=True)    # Starting string of the hash (used to virtually confirm work proof)
+    timestamp: datetime = field(init=True)
+    data: Data          = field(init=True)
+
+    __hash: str = field(init=False)
+
+    __prev: Block | None = field(init=False, repr=False, default=None)
+    __next: Block | None = field(init=False, repr=False, default=None)
 
     @property
     def prev(self) -> None | Block:
-        return self._prev
+        return self.__prev
+
     @prev.setter
     def prev(self, prev_block: Block) -> None:
         if prev_block.hash != self.previous_hash: 
             raise WrongBlockError(f"Hash are not corresponding: {self.previous_hash} and {prev_block.hash}")
-        self._prev = prev_block
-
-@dataclass
-class TailBlock(Block):
-    """ Tail block. """
-    previous_hash: str = field(init=False, default="abc123")
-    data: None | Data = field(init=False, default_factory=Data)
-    nounce: str = field(init=False, default="")
-    hash: str = field(init=False, default_factory=fake_hash)
-
-    _prev: None = field(init=False, default=None, repr=False)
-    _next: None | Block = field(init=False, default=None, repr=False)
+        self.__prev = prev_block
 
     @property
-    def prev(self) -> None: 
-        return self._prev
+    def hash(self) -> str:
+        return self.__hash
+
+    @hash.setter
+    def hash(self, hash: str) -> None:
+        self.__hash = hash
+
+    def compute_hash(self):
+        return ""
 
 @dataclass
 class Blockchain:
     """ Chain storing class. """
-    tail: TailBlock = field(init=True)
-    head: Block = field(init=False)
+    tail: Block | None = field(init=False, default=None)
+    head: Block | None = field(init=False, default=None)
 
-    _nounce: str = field(init=False, default="")
-    _size: int = field(init=False, default=1)
+    __nounce: str = field(init=False, default="")
+    __size: int = field(init=False, default=1)
 
-    def __post_init__(self):
-        self.head = self.tail
-
-    def forge(self, block: Block, proof: str) -> dict:
+    def create_genesis_block(self):
+        """ Genesis Block. First block. """
+        block = Block("", self.__nounce, datetime.now(), Data(""))
+        block.hash = block.compute_hash()
+        self.__append_block(block)
+    
+    def __append_block(self, block: Block) -> None:
+        if not self.block_is_valid(block):
+            return
         
-        if not proof: return {"message": "refused"}
+        if not self.tail:
+            self.tail = block
+            self.head = block
+            return
+        
+        self.head = block
 
-        self.switch_head(block)
-        self._size += 1
-
-        return {"message": "success"}
-
-    def switch_head(self, new_block: Block) -> None:
-        new_block.prev = self.head
-        self.head._next = new_block
-        self.head = new_block
-
-    def verify_block(self, block: Block) -> bool:
-        raise NotImplementedError()
+    def block_is_valid(self, block: Block) -> bool:
+        """ Verify the block hash with the current nounce. """
+        return block.hash.startswith(self.__nounce)
     
     @property
     def size(self) -> int:
-        return self._size
+        return self.__size
 
     @property
     def nounce(self) -> str:
-        return self._nounce
+        return self.__nounce
+
     @nounce.setter
-    def nounce(self, new: str) -> None:
-        self._nounce = new
+    def nounce(self, nounce: str) -> None:
+        self.__nounce = nounce
