@@ -2,7 +2,7 @@ from dataclasses import InitVar, dataclass, field
 from enum import Enum, auto
 import re
 from .node import Node, Leaf
-from .utils import hash
+from .utils import digest
 
 L_BRACKET_SHORT = '└─'
 L_BRACKET_LONG = '└──'
@@ -28,7 +28,7 @@ class MerkleTree:
             self.__root = None
             return
         
-        leaves = [Leaf(hash(value)) for value in values]
+        leaves = [Leaf(digest(value)) for value in values]
         for leaf in leaves:
             self.insert(leaf)
 
@@ -94,7 +94,7 @@ class MerkleTree:
         fork_node = last_leaf.parent
 
         # Create the new branch and attach the leaves (the one uprooted and the one inserted)
-        subroot = Node(hash(last_leaf.value + leaf.value), last_leaf, leaf, fork_node)
+        subroot = Node(digest(last_leaf.value + leaf.value), last_leaf, leaf, fork_node)
 
         if not fork_node:
             self.__root = subroot
@@ -108,7 +108,7 @@ class MerkleTree:
         # Update the hashes of the ancestors bottom-up
         curr = fork_node
         while curr:
-            curr.compute_hash()
+            curr.digest_hashes()
             curr = curr.parent
     
     def insert_old(self, leaf: Leaf) -> None:
@@ -124,7 +124,7 @@ class MerkleTree:
 
         if self.__root.is_leaf:
             left = self.__root
-            self.__root = Node(hash(left.value + leaf.value), left, leaf, None)
+            self.__root = Node(digest(left.value + leaf.value), left, leaf, None)
 
         else:
             last_leaf = self.get_inorder_leaf()
@@ -132,7 +132,7 @@ class MerkleTree:
                 subroot = last_leaf.parent
                 left = Leaf(last_leaf.value)
                 right = leaf
-                intermediary = Node(hash(left.value + right.value), left, right, subroot)
+                intermediary = Node(digest(left.value + right.value), left, right, subroot)
                 
                 if last_leaf.is_left_child:
                     subroot.left = intermediary #type: ignore

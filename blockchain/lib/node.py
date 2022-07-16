@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from .utils import hash_entries
+from .utils import digest_double_entries
 
 
 @dataclass(slots=True)
@@ -108,15 +108,15 @@ class Node:
 
         return 1 + self.__count_recursive(node.left) + self.__count_recursive(node.right)
 
-    def compute_hash(self) -> None:
+    def digest_hashes(self) -> None:
         """ 
-        Compute the hash from the left value and right value. 
+        Digest the hash from the left and right nodes / leaves. 
         Double left value if no right value.
         """
         if not self.__left: raise Exception("Node is a Leaf. Can't compute hash from non-existent children.")
         left_value = self.__left.__value
         right_value = self.__right.__value if self.__right else self.__left.__value
-        self.__value = hash_entries(left_value, right_value)
+        self.__value = digest_double_entries(left_value, right_value)
 
 @dataclass(slots=True)
 class Leaf(Node):
