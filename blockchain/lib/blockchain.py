@@ -5,6 +5,7 @@ from datetime import datetime
 
 from .block import Block, Data
 
+
 class NotDigestedBlock(Exception):
     ...
 class NotProvedBlock(Exception):
@@ -21,7 +22,7 @@ class Blockchain:
 
     def create_genesis_block(self) -> Block:
         """ Genesis Block. First block. """
-        block = Block("", self.__nounce, datetime.now(), Data(""))
+        block = Block("", self.__nounce, datetime.now(), Data())
         self.__append_block(block.compute_hash())
         return block
 
@@ -52,6 +53,10 @@ class Blockchain:
     def block_is_valid(self, block: Block) -> bool:
         """ Verify the block hash with the current nounce. """
         return block.hash.startswith(self.__nounce)
+
+    @property
+    def last_block(self) -> Block | None:
+        return self.head
     
     @property
     def size(self) -> int:

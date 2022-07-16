@@ -3,16 +3,20 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from datetime import datetime
+from .utils import digest
 
 class WrongBlockLinkError(Exception):
     ...
 
-@dataclass
+@dataclass(slots=True)
 class Data:
     """ Data contained in a block. """
     # Should it be where  the merkle tree is placed ?
     # Need further documentation
     transactions: str = field(init=True, default="")
+
+    def __str__(self) -> str:
+        return self.transactions
 
 @dataclass(slots=True)
 class Block:
@@ -62,5 +66,5 @@ class Block:
         self.__hash = hash
 
     def compute_hash(self) -> Block:
-        self.__hash = ""
+        self.__hash = digest(self.previous_hash + self.nounce + str(self.timestamp) + str(self.data))
         return self

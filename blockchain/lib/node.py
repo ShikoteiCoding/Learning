@@ -3,7 +3,6 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from .utils import digest_double_entries
 
-
 @dataclass(slots=True)
 class Node:
     """ Node sub-element of Markle Tree """
