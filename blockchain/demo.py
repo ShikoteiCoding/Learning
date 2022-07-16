@@ -64,8 +64,8 @@ def create_blockchain_without_users():
     bc = Blockchain()
     head = bc.create_genesis_block()
 
-    bc.add_block(Block(head.hash, "", datetime.now(), Data()).compute_hash())
-    bc.add_block(Block(head.hash, "", datetime.now(), Data()).compute_hash())
+    b1 = bc.add_block(Block(head.hash, "", datetime.now(), Data()).compute_hash())
+    b2 = bc.add_block(Block(b1.hash, "", datetime.now(), Data()).compute_hash())
 
     print(bc)
 

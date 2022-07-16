@@ -7,6 +7,8 @@ from .block import Block, Data
 
 class NotDigestedBlock(Exception):
     ...
+class NotProvedBlock(Exception):
+    ...
 
 @dataclass
 class Blockchain:
@@ -23,28 +25,29 @@ class Blockchain:
         self.__append_block(block.compute_hash())
         return block
 
-    def add_block(self, block: Block) -> None:
+    def add_block(self, block: Block) -> Block:
         """ Add a block to existing blockchain. """
         try:
             block.hash
         except (AttributeError) as error:
             raise NotDigestedBlock(f"Block provided has not been hashed yet. {error}")
-        self.__append_block(block)
+        return self.__append_block(block)
     
-    def __append_block(self, block: Block) -> None:
+    def __append_block(self, block: Block) -> Block:
         if not self.block_is_valid(block):
-            return
+            raise NotProvedBlock(f"Block provided does not contain proof. Nounce is {self.__nounce}. ")
         
         if not self.tail or not self.head:
             self.tail = block
             self.head = block
-            return
+            return self.head
         
         Block.link_blocks(self.head, block)
 
         self.head = block
-
         self.__size += 1
+
+        return self.head
 
     def block_is_valid(self, block: Block) -> bool:
         """ Verify the block hash with the current nounce. """
