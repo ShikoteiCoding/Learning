@@ -78,10 +78,15 @@ def create_users():
     user = User("User 1")
 
     pv_key = generate_private_key_from_value("user1")
-    pu_key = generate_public_key_from_private_key(pv_key)
-    user.set_keys(pv_key, pu_key)
-    #print(pv_key, pu_key)
-    User.export_user(user, DATA_PATH)
+    pu_key, pu_key_encoded = generate_public_key_from_private_key(pv_key)
+    user.set_keys(pv_key, pu_key, pu_key_encoded)
+    print(pv_key, pu_key)
+    #User.export_user(user)
+    user = User.import_user("User 1")
+    
+    print(pv_key == user.private_key)
+    print(pu_key == user.public_key)
+    print(pu_key_encoded == user.public_key_encoded)
 
 if __name__ == "__main__":
     create_users()

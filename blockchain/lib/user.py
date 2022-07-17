@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
+from sys import intern
 
 from .utils import digest
 
 import fastecdsa.keys
 import fastecdsa.curve
 import fastecdsa.encoding.sec1
+from fastecdsa.point import Point
 
 class NoExistingPrivateKey(Exception):
     ...
@@ -14,75 +16,97 @@ class NoExistingKeysPair(Exception):
     ...
 
 CURVE = fastecdsa.curve.secp256k1
+DATA_PATH = "data/"
+PUBLIC_KEY_FILE_SUFFIX = "-public-key.txt"
+PRIVATE_KEY_FILE_SUFFIX = "-private-key.txt"
 
-def generate_private_key_from_value(value: str) -> str:
-        """ 
-        Generate a private key from digesting a provided string. 
-        Warning: value should be randomly generated under CSPRNG generator standard.
-        This is for simplicity only.
-        """
-        return digest(value)
+def encode_public_key(public_key: Point) -> str:
+    """
+    From a Point, encode the key in hexa (str) of 257 bits 
+    """
+    return hex(public_key.x + ((2 if public_key.y % 2 == 0 else 3) << 256))
 
-def generate_public_key_from_private_key(private_key: str) -> str:
-        """ 
-        Generate a public key from applying elliptic curve multiplication to the private key.
-        """
-        # Elliptic curve expect integers to compute intersection points with the curve
-        private_key_raw = int(private_key, base=16)
+def generate_private_key_from_value(value: str) -> int:
+    """ 
+    Generate a private key from digesting a provided string. 
+    Warning: value should be randomly generated under CSPRNG generator standard.
+    This is for simplicity only.
+    """
+    return int(digest(value), base=16)
 
-        # Compute the public key (points in elliptic curve space)
-        public_key = fastecdsa.keys.get_public_key(private_key_raw, CURVE)
+def generate_public_key_from_private_key(private_key: int) -> tuple[Point, str]:
+    """ 
+    Generate a public key from applying elliptic curve multiplication to the private key.
+    """
+    # Compute the public key (points in elliptic curve space)
+    public_key = fastecdsa.keys.get_public_key(private_key, CURVE)
 
-        # Compress the key (256 + 1 bits)
-        compressed_pubkey = public_key.x + ((2 if public_key.y % 2 == 0 else 3) << 256)
-        return hex(compressed_pubkey)
-
-
+    # Compress the key (256 + 1 bits)
+    return public_key, encode_public_key(public_key)
 
 @dataclass
 class User:
-    name: str = field(init=True)                      # for convenience only.
-    __private_key: str = field(init=False, default="")  # Use str of int key (base 16 keys)
-    __public_key: str = field(init=False, default="")   # 
+    name: str = field(init=True)
+
+    __private_key: int = field(init=False)
+    __public_key: Point = field(init=False)
+    __public_key_encoded: str = field(init=False)
 
     @property
-    def private_key(self) -> str:
+    def private_key(self) -> int:
         """ Get the private key of the user """
         return self.__private_key
     
     @private_key.setter
-    def private_key(self, value: str) -> None:
+    def private_key(self, value: int) -> None:
         """ Set the private key of the user. """
         self.__private_key = value
 
     @property
-    def public_key(self) -> str:
+    def public_key(self) -> Point:
         """ Get the public key of the user. """
         return self.__public_key
 
     @public_key.setter
-    def public_key(self, value: str) -> None:
+    def public_key(self, value: Point) -> None:
         """ Set the public key of the user. """
         self.__public_key = value
 
-    def set_keys(self, private_key: str, public_key: str) -> None:
+    @property
+    def public_key_encoded(self) -> str:
+        """ Get the public key encoded of the user. """
+        return self.__public_key_encoded
+
+    @public_key_encoded.setter
+    def public_key_encoded(self, value: str) -> None:
+        """ Set the public key encoded of the user. """
+        self.__public_key_encoded = value
+
+    def set_keys(self, private_key: int, public_key: Point, public_key_encoded: str) -> None:
         """ Set generated keys for user. """
         self.__private_key = private_key
         self.__public_key = public_key
+        self.__public_key_encoded = public_key_encoded
 
     @staticmethod
-    def export_user(user: User, data_path: str):
+    def export_user(user: User, data_path: str = DATA_PATH) -> None:
+        """ Use builtin functions of elliptic curves to export keys. """
         if not user.private_key or not user.public_key:
             raise NoExistingKeysPair("User provided does not have existing private and public key.")
 
-        # Export public key
-        with open(data_path + user.name + '-public-key.txt', 'w') as f:
-            public_key = fastecdsa.encoding.sec1.SEC1Encoder().decode_public_key(user.public_key, CURVE)
-            content = fastecdsa.keys.export_key(public_key, CURVE)
-            f.write(content or '')
+        fastecdsa.keys.export_key(user.public_key, CURVE, data_path + user.name + PUBLIC_KEY_FILE_SUFFIX)
+        fastecdsa.keys.export_key(user.private_key, CURVE, data_path + user.name + PRIVATE_KEY_FILE_SUFFIX)
 
-        # Export private key
-        with open(data_path + user.name + '-public-key.txt', 'w') as f:
-            private_key_raw = int(user.private_key, base=16)
-            content = fastecdsa.keys.export_key(private_key_raw, CURVE)
-            f.write(content or '')
+    @staticmethod
+    def import_user(username: str, data_path: str = DATA_PATH) -> User:
+        """ Use builtin functions of elliptic curves to import keys. """
+
+        user = User(username)
+
+        private_key = fastecdsa.keys.import_key(data_path + username + PRIVATE_KEY_FILE_SUFFIX, CURVE)
+        public_key = fastecdsa.keys.import_key(data_path + username + PUBLIC_KEY_FILE_SUFFIX, CURVE)
+        
+        if private_key[0]:
+            user.set_keys(private_key[0], public_key[1], encode_public_key(public_key[1]))
+
+        return user
