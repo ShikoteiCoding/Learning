@@ -89,7 +89,7 @@ class User:
         self.__public_key_encoded = public_key_encoded
 
     @staticmethod
-    def export_user(user: User, data_path: str = DATA_PATH) -> None:
+    def export_(user: User, data_path: str = DATA_PATH) -> None:
         """ Use builtin functions of elliptic curves to export keys. """
         if not user.private_key or not user.public_key:
             raise NoExistingKeysPair("User provided does not have existing private and public key.")
@@ -98,7 +98,7 @@ class User:
         fastecdsa.keys.export_key(user.private_key, CURVE, data_path + user.name + PRIVATE_KEY_FILE_SUFFIX)
 
     @staticmethod
-    def import_user(username: str, data_path: str = DATA_PATH) -> User:
+    def import_(username: str, data_path: str = DATA_PATH) -> User:
         """ Use builtin functions of elliptic curves to import keys. """
 
         user = User(username)

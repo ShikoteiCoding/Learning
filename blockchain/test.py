@@ -1,6 +1,6 @@
 import unittest
 
-from lib.user import User
+from lib.user import User, generate_private_key_from_value, generate_public_key_from_private_key
 from lib.tree import MerkleTree
 from lib.node import Node, Leaf
 
@@ -12,7 +12,9 @@ DEPTH = 2
 NB_LEAVES = 6
 SIZE = 11
 
-class Testnode(unittest.TestCase):
+USERS = ['USER1', 'USER2', 'USERS3']
+
+class TestNode(unittest.TestCase):
     """
     This test class is used to test methods of the node class.
     """
@@ -104,7 +106,7 @@ class Testnode(unittest.TestCase):
         self.assertTrue(right_leaf.is_right_child)
         self.assertFalse(right_leaf.is_left_child)
 
-class TestTree(unittest.TestCase):
+class TestMerkleTree(unittest.TestCase):
     """ 
     This test class is used to test methods of the tree class
     """
@@ -159,6 +161,52 @@ class TestBlock(unittest.TestCase):
     This class is used to test things related to the Block of a chain.
     """
     # Not implemented as there will be improvements now that the global architecture is understood.
+
+class TestUser(unittest.TestCase):
+    """
+    This class is used to test attributes, methods and properties of a potential blockchain User.
+    """
+
+    def setUp(self) -> None:
+        """
+        Initialise a user here as it is an expensive operation and several operations are tested.
+        """
+        self.username = USERS[0]
+        self.user = User(self.username)
+
+        self.private_key = generate_private_key_from_value(self.username)
+        self.public_key, self.public_key_encoded = generate_public_key_from_private_key(self.private_key)
+
+        self.user.set_keys(self.private_key, self.public_key, self.public_key_encoded)
+    
+    def tearDown(self) -> None:
+        super().tearDown()
+
+    def test_valid_user(self) -> None:
+        """
+        Test properties and initialisation of a user.
+        """
+
+        self.assertEqual(self.user.private_key, self.private_key)
+        self.assertEqual(self.user.public_key, self.public_key)
+        self.assertEqual(self.user.public_key_encoded, self.public_key_encoded)
+
+    def test_export_import_user(self):
+        """
+        Test serialization of a user.
+        """
+
+        User.export_(self.user)
+        imported_user = User.import_(self.username)
+
+        self.assertEqual(imported_user.private_key, self.private_key)
+        self.assertEqual(imported_user.public_key, self.public_key)
+        self.assertEqual(imported_user.public_key_encoded, self.public_key_encoded)
+
+        self.assertEqual(self.user.private_key, self.private_key)
+        self.assertEqual(self.user.public_key, self.public_key)
+        self.assertEqual(self.user.public_key_encoded, self.public_key_encoded)
+
 
 if __name__ == '__main__':
     unittest.main()
