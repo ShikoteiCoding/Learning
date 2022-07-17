@@ -76,6 +76,11 @@ def create_blockchain_without_users():
 def create_users():
     user = User.import_("User 1")
 
-    print(user)
+    private_key = generate_private_key_from_value("VALUE1")
+    print(generate_public_key_from_private_key(private_key))
+
+    print(digest("VALUE1"))
+    print(private_key)
+
 if __name__ == "__main__":
     create_users()

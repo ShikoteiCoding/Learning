@@ -1,8 +1,12 @@
 import unittest
 
-from lib.user import User, generate_private_key_from_value, generate_public_key_from_private_key
+from lib.user import (
+    User, 
+    encode_public_key, generate_private_key_from_value, generate_public_key_from_private_key
+)
 from lib.tree import MerkleTree
 from lib.node import Node, Leaf
+from fastecdsa.point import Point
 
 from lib.utils import digest, digest_double_entries
 
@@ -208,6 +212,23 @@ class TestUser(unittest.TestCase):
     
     def tearDown(self) -> None:
         super().tearDown()
+
+    def test_encoding_functions(self) -> None:
+        """ Test the functions stored in user to deal with users keys. """
+
+        private_key = generate_private_key_from_value("VALUE1")
+
+        self.assertGreaterEqual(len(str(private_key)), 64)
+        self.assertLessEqual(len(str(private_key)), 78)
+        self.assertEqual(private_key, 73101711357121244040869557647379862999364686624517238390144621704807218443250)
+
+        public_key, public_key_encoded = generate_public_key_from_private_key(private_key)
+        self.assertEqual(public_key.x, 68863937396896224516328106466925409444047391051799494080204469204999097398252)
+        self.assertEqual(public_key.y, 112448337416410614927640030702529231480407343724892916721680495766641425200342)
+
+        # Remove '0x' indicating hexadecimal value
+        self.assertEqual(public_key_encoded[2:], '2983f9b7987fd629dadf622093b9743e7f9f62243e79b9924b44798fa6db9b3ec')
+
 
     def test_valid_user(self) -> None:
         """

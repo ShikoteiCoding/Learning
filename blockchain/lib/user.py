@@ -20,6 +20,10 @@ DATA_PATH = "data/"
 PUBLIC_KEY_FILE_SUFFIX = "-public-key.txt"
 PRIVATE_KEY_FILE_SUFFIX = "-private-key.txt"
 
+###########################
+#   Functions to encode.  #
+###########################
+
 def encode_public_key(public_key: Point) -> str:
     """
     From a Point, encode the key in hexa (str) of 257 bits 
@@ -32,6 +36,8 @@ def generate_private_key_from_value(value: str) -> int:
     Warning: value should be randomly generated under CSPRNG generator standard.
     This is for simplicity only.
     """
+    # Value is not really a "str" but an hexadecimal number.
+    # Convert it back to decimal.
     return int(digest(value), base=16)
 
 def generate_public_key_from_private_key(private_key: int) -> tuple[Point, str]:
@@ -43,6 +49,12 @@ def generate_public_key_from_private_key(private_key: int) -> tuple[Point, str]:
 
     # Compress the key (256 + 1 bits)
     return public_key, encode_public_key(public_key)
+
+
+
+###########################
+#     User base class.    #
+###########################
 
 @dataclass
 class User:
