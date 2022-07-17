@@ -9,6 +9,8 @@ from lib.utils import digest, digest_double_entries
 
 from datetime import datetime
 
+DATA_PATH = 'data/'
+
 def create_hashed_binary_tree():
     """ Create a binary tree from arbitrary list of data. """
     
@@ -73,11 +75,13 @@ def create_blockchain_without_users():
 
 def create_users():
 
-    user = User()
+    user = User("User 1")
 
     pv_key = generate_private_key_from_value("user1")
     pu_key = generate_public_key_from_private_key(pv_key)
-    print(pv_key, pu_key)
+    user.set_keys(pv_key, pu_key)
+    #print(pv_key, pu_key)
+    User.export_user(user, DATA_PATH)
 
 if __name__ == "__main__":
     create_users()
