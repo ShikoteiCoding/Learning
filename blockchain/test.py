@@ -14,6 +14,33 @@ SIZE = 11
 
 USERS = ['USER1', 'USER2', 'USERS3']
 
+class TestUtilsDigestFunctions(unittest.TestCase):
+    """
+    This test class is used to test the hash functions used throughout the project.
+    """
+
+    def test_hash(self) -> None:
+        """ Test the digest functions. """
+        value = 'VALUE1'
+        hash = digest(value)
+
+        self.assertEqual(len(hash), 64)
+        self.assertEqual(hash, 'a19e1a35ea85f3b12c287171db8cdb86d6ddff957ec676cda7fbedadf36873f2')
+
+    def test_hash_pair(self) -> None:
+        """ Test the digest functions. """
+        hash1 = digest('VALUE1')
+        hash2 = digest('VALUE2')
+
+        hash_pair = digest_double_entries(hash1, hash2)
+
+        self.assertEqual(len(hash1), 64)
+        self.assertEqual(len(hash2), 64)
+        self.assertEqual(len(hash_pair), 64)
+        self.assertEqual(hash1, 'a19e1a35ea85f3b12c287171db8cdb86d6ddff957ec676cda7fbedadf36873f2')
+        self.assertEqual(hash2, 'fe3d147c5902a7c7e0956b7074527202a4965789669a78478a636108b32c63f4')
+        self.assertEqual(hash_pair, 'c2a453d71ede92bf62131122161774fbc05775ccb546dea4642a2472814ef134')
+
 class TestNode(unittest.TestCase):
     """
     This test class is used to test methods of the node class.
