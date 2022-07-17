@@ -3,6 +3,7 @@ from lib.block import Block, Data
 
 from lib.tree import MerkleTree
 from lib.node import Node, Leaf
+from lib.user import User, generate_private_key_from_value, generate_public_key_from_private_key
 
 from lib.utils import digest, digest_double_entries
 
@@ -70,6 +71,13 @@ def create_blockchain_without_users():
     
     print(bc)
 
+def create_users():
+
+    user = User()
+
+    pv_key = generate_private_key_from_value("user1")
+    pu_key = generate_public_key_from_private_key(pv_key)
+    print(pv_key, pu_key)
 
 if __name__ == "__main__":
-    create_blockchain_without_users()
+    create_users()

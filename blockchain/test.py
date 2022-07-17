@@ -1,6 +1,6 @@
 import unittest
 
-from user import User
+from lib.user import User
 from lib.tree import MerkleTree
 from lib.node import Node, Leaf
 
@@ -153,6 +153,12 @@ class TestTree(unittest.TestCase):
 
         bst.insert(Leaf(digest(LEAF_VALUES[1])))
         self.assertEqual(bst.hash, digest_double_entries(LEAF_HASHES[0], LEAF_HASHES[1]))
+
+class TestBlock(unittest.TestCase):
+    """ 
+    This class is used to test things related to the Block of a chain.
+    """
+    # Not implemented as there will be improvements now that the global architecture is understood.
 
 if __name__ == '__main__':
     unittest.main()
