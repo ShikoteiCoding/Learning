@@ -2,7 +2,7 @@ import unittest
 
 from lib.user import (
     User, 
-    encode_public_key, generate_private_key_from_value, generate_public_key_from_private_key
+    encode_elliptic_point, generate_private_key_from_value, generate_public_key_from_private_key
 )
 from lib.tree import MerkleTree
 from lib.node import Node, Leaf

@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from sys import intern
 
-from .utils import digest
+from .utils import digest, double_hash
 
 import fastecdsa.keys
 import fastecdsa.curve
@@ -24,7 +23,7 @@ PRIVATE_KEY_FILE_SUFFIX = "-private-key.txt"
 #   Functions to encode.  #
 ###########################
 
-def encode_public_key(public_key: Point) -> str:
+def encode_elliptic_point(public_key: Point) -> str:
     """
     From a Point, encode the key in hexa (str) of 257 bits 
     """
@@ -48,9 +47,13 @@ def generate_public_key_from_private_key(private_key: int) -> tuple[Point, str]:
     public_key = fastecdsa.keys.get_public_key(private_key, CURVE)
 
     # Compress the key (256 + 1 bits)
-    return public_key, encode_public_key(public_key)
+    return public_key, encode_elliptic_point(public_key)
 
-
+def generate_address_from_public_key(public_key_encoded: str) -> str:
+    """
+    Generate an address from a public key. (Point in elliptic curve)
+    """
+    return double_hash(public_key_encoded)
 
 ###########################
 #     User base class.    #
@@ -63,6 +66,7 @@ class User:
     __private_key: int = field(init=False)
     __public_key: Point = field(init=False)
     __public_key_encoded: str = field(init=False)
+    __address: str = field(init=False)
 
     @property
     def private_key(self) -> int:
@@ -119,6 +123,6 @@ class User:
         public_key = fastecdsa.keys.import_key(data_path + username + PUBLIC_KEY_FILE_SUFFIX, CURVE)
         
         if private_key[0]:
-            user.set_keys(private_key[0], public_key[1], encode_public_key(public_key[1]))
+            user.set_keys(private_key[0], public_key[1], encode_elliptic_point(public_key[1]))
 
         return user

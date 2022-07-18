@@ -3,7 +3,9 @@ from lib.block import Block, Data
 
 from lib.tree import MerkleTree
 from lib.node import Node, Leaf
-from lib.user import User, generate_private_key_from_value, generate_public_key_from_private_key
+from lib.user import ( User, 
+    generate_private_key_from_value, generate_public_key_from_private_key, generate_address_from_public_key
+)
 
 from lib.utils import digest, digest_double_entries
 
@@ -77,10 +79,10 @@ def create_users():
     user = User.import_("User 1")
 
     private_key = generate_private_key_from_value("VALUE1")
-    print(generate_public_key_from_private_key(private_key))
+    public_key, public_key_encoded = generate_public_key_from_private_key(private_key)
+    address = generate_address_from_public_key(public_key_encoded)
 
-    print(digest("VALUE1"))
-    print(private_key)
+    print(address)
 
 if __name__ == "__main__":
     create_users()
