@@ -1,8 +1,9 @@
 import hashlib
-from typing import Any
+from typing import Any, Callable
 from Crypto.Hash import RIPEMD160
 import base58
 import inspect
+import sys
 
 def base_58_check(value: str) -> str:
     """ Check encode in base 58. """

@@ -8,6 +8,7 @@ from lib.user import ( User,
 )
 
 from lib.utils import digest, digest_double_entries, cprint
+from lib.keys import PrivateKey
 
 from datetime import datetime
 
@@ -75,7 +76,7 @@ def create_blockchain_without_users():
     
     print(bc)
 
-def create_users():
+def create_users() -> None:
     user = User.import_("User 1")
 
     private_key = generate_private_key_from_value("VALUE1")
@@ -86,8 +87,20 @@ def create_users():
         private_key,
         public_key,
         public_key_encoded,
-        address
+        address,
     )
+    print(len(public_key_encoded))
+    print(len('0202a406624211f2abbdc68da3df929f938c3399dd79fac1b51b0e4ad1d26a47aa'))
+
+def keys() -> None:
+
+    pv_key = generate_private_key_from_value("VALUE1")
+
+    t = PrivateKey(pv_key)
+    thex = t.hex()
+
+    cprint(pv_key, t, thex)
+    
 
 if __name__ == "__main__":
-    create_users()
+    keys()
