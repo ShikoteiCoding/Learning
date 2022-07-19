@@ -7,7 +7,7 @@ from lib.user import ( User,
     generate_private_key_from_value, generate_public_key_from_private_key, generate_address_from_public_key
 )
 
-from lib.utils import digest, digest_double_entries
+from lib.utils import digest, digest_double_entries, cprint
 
 from datetime import datetime
 
@@ -82,10 +82,12 @@ def create_users():
     public_key, public_key_encoded = generate_public_key_from_private_key(private_key)
     address = generate_address_from_public_key(public_key_encoded)
 
-    print("Private Key: ", private_key)
-    print("Public Key: ", public_key)
-    print("Public Key Encoded: ", public_key_encoded)
-    print("Address: ", address)
+    cprint(
+        private_key,
+        public_key,
+        public_key_encoded,
+        address
+    )
 
 if __name__ == "__main__":
     create_users()
