@@ -82,7 +82,10 @@ def create_users():
     public_key, public_key_encoded = generate_public_key_from_private_key(private_key)
     address = generate_address_from_public_key(public_key_encoded)
 
-    print(address)
+    print("Private Key: ", private_key)
+    print("Public Key: ", public_key)
+    print("Public Key Encoded: ", public_key_encoded)
+    print("Address: ", address)
 
 if __name__ == "__main__":
     create_users()
