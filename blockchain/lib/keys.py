@@ -44,12 +44,12 @@ class PrivateKey:
         return self.decimal_value.bit_length()
 
     def hex(self, prefix: bool=False) -> str:
-        if not prefix: return hex(self.decimal_value)[2:0]
+        if not prefix: return hex(self.decimal_value)[2:]
         return hex(self.decimal_value)
 
-    def wif(self, compressed:bool = False) -> str:
+    def wif(self, compressed: bool=False) -> str:
         # Remove the hexadecimal prefix
-        hex_value = hex(self.decimal_value)[2:].upper()
+        hex_value = self.hex(prefix=False).upper()
         
         # Create the extended version of the hexadecimal key
         compression = '' if not compressed else '01'

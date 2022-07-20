@@ -98,7 +98,7 @@ def keys() -> None:
 
     pvk_int = PrivateKey(pv_key_hex)
     pvk_hex = PrivateKey(pv_key_hex).hex()
-    pvk_wif = PrivateKey(pv_key_hex).wif()
+    pvk_wif = PrivateKey(pv_key_hex).wif(compressed=True)
 
     cprint(pvk_wif)
 
