@@ -8,7 +8,7 @@ from lib.user import ( User,
 )
 
 from lib.utils import digest, digest_double_entries, cprint
-from lib.keys import PrivateKey
+from lib.keys import PrivateKey, PublicKey
 
 from datetime import datetime
 
@@ -97,10 +97,12 @@ def keys() -> None:
     pv_key_hex = "0x1E99423A4ED27608A15A2616A2B0E9E52CED330AC530EDCC32C8FFC6A526AEDD"
 
     pvk_int = PrivateKey(pv_key_hex)
-    pvk_hex = PrivateKey(pv_key_hex).hex()
-    pvk_wif = PrivateKey(pv_key_hex).wif(compressed=True)
+    #pvk_hex = PrivateKey(pv_key_hex).hex()
+    #pvk_wif = PrivateKey(pv_key_hex).wif(compressed=True)
 
-    cprint(pvk_wif)
+    puk = PublicKey(pvk_int)
+
+    cprint(pvk_int, puk)
 
     #cprint(pv_key_hex, pvk_int, pvk_hex, pvk_wif)
     

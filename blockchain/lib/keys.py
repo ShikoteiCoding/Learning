@@ -2,16 +2,25 @@ from dataclasses import InitVar, dataclass, field
 from tabnanny import check
 from lib.utils import b58encode, cprint, sha256
 
+from fastecdsa.point import Point
+from fastecdsa.curve import Curve
+
+import fastecdsa.keys
+import fastecdsa.curve
+import fastecdsa.encoding.sec1
+
 import sys
 
 HEX_PREFIX = "0x"
 WIF_PREFIX = "80"
+CURVE = fastecdsa.curve.secp256k1
 
 class EncodingNotValid(Exception):
     ...
 
 @dataclass
 class PrivateKey:
+    """ Define a Private Key with methods to manipulate easier. """
 
     value: InitVar[int | str]
 
@@ -63,3 +72,27 @@ class PrivateKey:
         cprint(hex_value, compression, extended, checksum, extended_checksum)
             
         return b58encode(extended_checksum)
+
+@dataclass
+class PublicKey():
+    """ Define a Public Key with methods to manipulate easier. """
+
+    value: InitVar[PrivateKey]
+
+    hex_value: str = field(init=False)
+
+    def __post_init__(self, value: PrivateKey | Point | str, curve: Curve = CURVE):
+        
+        str_value: str = str(value)
+
+        if not (type(value) == PrivateKey or type(value) == Point or type(value) == str):
+            raise EncodingNotValid("Expecting either a PrivateKey object, a Point(x, y) object or an hexa value.")
+
+        if type(value) == PrivateKey:
+            assert str_value.startswith(HEX_PREFIX), f"Expecting either an integer or a hex string starting with {HEX_PREFIX}."
+            self.hex_value = fastecdsa.keys.get_public_key(private_key, CURVE)
+
+        if type(value) == int:
+            bit_length: int = int(str_value).bit_length()
+            assert bit_length == 256, f"Integer Provided is not 256-bits: {bit_length}-bits"
+            self.hex_value = int(str_value)
