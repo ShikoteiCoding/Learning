@@ -1,9 +1,11 @@
 from dataclasses import InitVar, dataclass, field
-from lib.utils import base_58
+from tabnanny import check
+from lib.utils import b58encode, cprint, sha256
 
 import sys
 
 HEX_PREFIX = "0x"
+WIF_PREFIX = "80"
 
 class EncodingNotValid(Exception):
     ...
@@ -41,10 +43,23 @@ class PrivateKey:
     def bit_size(self) -> int:
         return self.decimal_value.bit_length()
 
-    def hex(self, prefix=True) -> str:
-        if not prefix:
-            return hex(self.decimal_value)[2:]
+    def hex(self, prefix: bool=False) -> str:
+        if not prefix: return hex(self.decimal_value)[2:0]
         return hex(self.decimal_value)
 
-    def wif(self, compressed=False) -> str:
-        return base_58(hex(self.decimal_value))
+    def wif(self, compressed:bool = False) -> str:
+        # Remove the hexadecimal prefix
+        hex_value = hex(self.decimal_value)[2:].upper()
+        
+        # Create the extended version of the hexadecimal key
+        compression = '' if not compressed else '01'
+        extended = WIF_PREFIX + hex_value + compression
+
+        # Compute the checksum
+        checksum = sha256(sha256(extended.upper()).upper())[0:8]
+
+        extended_checksum = extended + checksum.upper()
+
+        cprint(hex_value, compression, extended, checksum, extended_checksum)
+            
+        return b58encode(extended_checksum)

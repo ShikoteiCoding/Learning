@@ -1,13 +1,28 @@
 import hashlib
 from typing import Any, Callable
 from Crypto.Hash import RIPEMD160
-import base58
 import inspect
-import sys
 
-def base_58(value: str) -> str:
-    """ Check encode in base 58. """
-    return base58.b58encode(value.encode('utf-8')).decode('utf-8')
+alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+
+def b58encode(hex_string: str) :
+	""" Return a base58 encoded string from hex string """
+	num = int(hex_string, 16)
+	encode = ""
+	base_count = len(alphabet)
+	while (num > 0) :
+		num, res = divmod(num,base_count)
+		encode = alphabet[res] + encode
+	return encode
+
+def b58decode(value: str, prefix: bool=False):
+	""" Decode a Base58 encoded string as an integer and return a hex string """
+	if not isinstance(value, str):
+		value = value.decode('ascii')
+	decimal = 0
+	for char in value:
+		decimal = decimal * 58 + alphabet.index(char)
+	return hex(decimal)[2:] if not prefix else hex(decimal)
 
 def double_hash(value: str) -> str:
     """ Hash sha256 and RIPEND160. """
@@ -19,6 +34,13 @@ def double_hash(value: str) -> str:
 def digest(value: str) -> str:
     """ Hash a string value. """
     return hashlib.sha256(value.encode('utf-8')).hexdigest()
+
+def sha256(arg) :
+	""" Return a sha256 hash of a hex string. """
+	byte_array = bytearray.fromhex(arg)
+	m = hashlib.sha256()
+	m.update(byte_array)
+	return m.hexdigest()
 
 def digest_double_entries(lhash: str, rhash: str) -> str:
     """ Hash a double entry. """

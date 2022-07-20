@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from .utils import digest, double_hash, base_58
+from .utils import digest, double_hash, b58encode
 
 import fastecdsa.keys
 import fastecdsa.curve
@@ -53,7 +53,7 @@ def generate_address_from_public_key(public_key_encoded: str) -> str:
     """
     Generate an address from a public key. (Point in elliptic curve)
     """
-    return base_58(double_hash(public_key_encoded))
+    return b58encode(double_hash(public_key_encoded))
 
 ###########################
 #     User base class.    #

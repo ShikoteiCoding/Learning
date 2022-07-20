@@ -94,13 +94,15 @@ def create_users() -> None:
 
 def keys() -> None:
 
-    pv_key_integer = generate_private_key_from_value("VALUE1")
+    pv_key_hex = "0x1E99423A4ED27608A15A2616A2B0E9E52CED330AC530EDCC32C8FFC6A526AEDD"
 
-    pvk_int = PrivateKey(pv_key_integer)
-    pvk_hex = PrivateKey(hex(pv_key_integer))
-    pvk_wif = PrivateKey(pv_key_integer).wif()
+    pvk_int = PrivateKey(pv_key_hex)
+    pvk_hex = PrivateKey(pv_key_hex).hex()
+    pvk_wif = PrivateKey(pv_key_hex).wif()
 
-    cprint(pv_key_integer, pvk_int, pvk_hex, pvk_wif)
+    cprint(pvk_wif)
+
+    #cprint(pv_key_hex, pvk_int, pvk_hex, pvk_wif)
     
 
 if __name__ == "__main__":
