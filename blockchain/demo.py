@@ -96,9 +96,11 @@ def keys() -> None:
 
     pv_key_integer = generate_private_key_from_value("VALUE1")
 
-    private_key_class = PrivateKey(pv_key_integer)
+    pvk_int = PrivateKey(pv_key_integer)
+    pvk_hex = PrivateKey(hex(pv_key_integer))
+    pvk_wif = PrivateKey(pv_key_integer).wif()
 
-    cprint(pv_key_integer, private_key_class)
+    cprint(pv_key_integer, pvk_int, pvk_hex, pvk_wif)
     
 
 if __name__ == "__main__":

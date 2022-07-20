@@ -5,7 +5,7 @@ import base58
 import inspect
 import sys
 
-def base_58_check(value: str) -> str:
+def base_58(value: str) -> str:
     """ Check encode in base 58. """
     return base58.b58encode(value.encode('utf-8')).decode('utf-8')
 
