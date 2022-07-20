@@ -94,12 +94,11 @@ def create_users() -> None:
 
 def keys() -> None:
 
-    pv_key = generate_private_key_from_value("VALUE1")
+    pv_key_integer = generate_private_key_from_value("VALUE1")
 
-    t = PrivateKey(pv_key)
-    thex = t.hex()
+    private_key_class = PrivateKey(pv_key_integer)
 
-    cprint(pv_key, t, thex)
+    cprint(pv_key_integer, private_key_class)
     
 
 if __name__ == "__main__":
