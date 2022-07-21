@@ -82,33 +82,19 @@ class PrivateKey:
 class PublicKey():
     """ Define a Public Key with methods to manipulate easier. """
 
-    value: InitVar[PrivateKey | Point | str | int]
+    value: InitVar[PrivateKey]
     curve: InitVar[Curve] = CURVE
 
     __hex_value: str = field(init=False)
 
-    def __post_init__(self, value: PrivateKey | Point | str | int, curve: Curve):
+    def __post_init__(self, value: PrivateKey, curve: Curve):
         
         str_value: str = str(value)
 
-        if not (type(value) == PrivateKey or type(value) == Point or type(value) == str):
-            raise EncodingNotValid("Expecting either a PrivateKey object, a Point(x, y) object or an hexa value.")
+        if type(value) != PrivateKey:
+            raise EncodingNotValid("Expecting a PrivateKey.")
 
-        if type(value) == PrivateKey:
-            #self.hex_value = fastecdsa.keys.get_public_key(private_key, CURVE)
-            self.__hex_value = encode_elliptic_point(fastecdsa.keys.get_public_key(int(str_value, base=10), curve))
+        self.__hex_value = encode_elliptic_point(fastecdsa.keys.get_public_key(int(str_value, base=10), curve))
 
-        if type(value) == Point:
-            self.__hex_value = encode_elliptic_point(value) #type: ignore
-
-        if type(value) == int:
-            bit_length: int = int(str_value).bit_length()
-            assert bit_length == 256, f"Integer Provided is not 256-bits: {bit_length}-bits"
-            self.__hex_value = int(str_value)
-
-        if type(value) == str:
-            assert str_value.startswith(HEX_PREFIX), f"Expecting either an integer or a hex string starting with {HEX_PREFIX}."
-        
-    
     def __str__(self) -> str:
         return str(self.__hex_value)

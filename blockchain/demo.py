@@ -97,13 +97,11 @@ def keys() -> None:
     pu_key_point = generate_public_key_from_private_key(int(pv_key_hex, base=16))
 
     pvk_int = PrivateKey(pv_key_hex)
-    #pvk_hex = PrivateKey(pv_key_hex).hex()
-    #pvk_wif = PrivateKey(pv_key_hex).wif(compressed=True)
+    print(pu_key_point)
 
     puk_pvk = PublicKey(pvk_int)
-    puk_point = PublicKey(pu_key_point[0])
 
-    cprint(pvk_int, puk_pvk, puk_point)
+    cprint(pvk_int, puk_pvk)
 
     #cprint(pv_key_hex, pvk_int, pvk_hex, pvk_wif)
     
