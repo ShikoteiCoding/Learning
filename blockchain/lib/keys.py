@@ -23,23 +23,22 @@ class EncodingNotValid(Exception):
 class PrivateKey:
     """ Define a Private Key with methods to manipulate easier. """
 
-    value: InitVar[int | str]
+    init_value: InitVar[int | str]
 
     # Value of private key is the base 10 integer
     __value: int = field(init=False)
 
-    def __post_init__(self, value: int | str):
+    def __post_init__(self, init_value: int | str):
         
-        str_value: str = str(value)
+        str_value: str = str(init_value)
 
-        if not (type(value) == str or type(value) == int):
-            raise EncodingNotValid("Expecting either an integer or a string as an hexadecimal format.")
+        assert type(init_value) == str or type(init_value) == int, "Expecting either an integer or a string as an hexadecimal format."
 
-        if type(value) == str:
+        if type(init_value) == str:
             assert str_value.startswith(HEX_PREFIX), f"Expecting either an integer or a hex string starting with {HEX_PREFIX}."
             self.__value = int(str_value, base=16)
 
-        if type(value) == int:
+        if type(init_value) == int:
             bit_length: int = int(str_value).bit_length()
             assert bit_length == 256, f"Integer Provided is not 256-bits: {bit_length}-bits"
             self.__value = int(str_value)
@@ -51,11 +50,10 @@ class PrivateKey:
         return len(str(self.__value))
 
     @property
-    def decimal_value(self) -> int:
+    def value(self) -> int:
         return self.__value
 
-    @property
-    def bit_size(self) -> int:
+    def bit_length(self) -> int:
         return self.__value.bit_length()
 
     def hex(self, prefix: bool=False) -> str:
@@ -85,7 +83,7 @@ class PrivateKey:
 class PublicKey():
     """ Define a Public Key with methods to manipulate easier. """
 
-    value: InitVar[PrivateKey]
+    init_value: InitVar[PrivateKey]
     curve: InitVar[Curve] = CURVE
 
     # Value of public key is "Compressed Hexadecimal (with 0x prefix)"
@@ -95,19 +93,24 @@ class PublicKey():
         
         str_value: str = str(value)
 
-        if type(value) != PrivateKey:
-            raise EncodingNotValid("Expecting a PrivateKey.")
-
+        assert type(value) == PrivateKey, "Expecting a PrivateKey."
         self.__value = encode_elliptic_point(fastecdsa.keys.get_public_key(int(str_value, base=10), curve))
 
     def __str__(self) -> str:
         return str(self.__value)
 
+    def __len__(self) -> int:
+        return len(self.__value)
+
+    @property
+    def value(self) -> str:
+        return self.__value
+
 @dataclass
 class Address():
     """ Define an Address to register a Block or transactions. """
 
-    value: InitVar[PublicKey]
+    init_value: InitVar[PublicKey]
     curve: InitVar[Curve] = CURVE
 
     __value: str = field(init=False)
@@ -116,4 +119,14 @@ class Address():
         
         str_value: str = str(value)
 
-        
+        assert()
+    
+    def __str__(self) -> str:
+        return self.__value
+
+    def __len__(self) -> int:
+        return len(self.__value)
+
+    @property
+    def value(self) -> str:
+        return self.__value
