@@ -1,6 +1,6 @@
 from dataclasses import InitVar, dataclass, field
 from tabnanny import check
-from lib.utils import b58encode, cprint, sha256
+from lib.utils import b58encode, cprint, sha256, encode_elliptic_point
 
 from fastecdsa.point import Point
 from fastecdsa.curve import Curve
@@ -18,13 +18,14 @@ CURVE = fastecdsa.curve.secp256k1
 class EncodingNotValid(Exception):
     ...
 
+
 @dataclass
 class PrivateKey:
     """ Define a Private Key with methods to manipulate easier. """
 
     value: InitVar[int | str]
 
-    decimal_value: int = field(init=False)
+    __decimal_value: int = field(init=False)
 
     def __post_init__(self, value: int | str):
         
@@ -35,26 +36,30 @@ class PrivateKey:
 
         if type(value) == str:
             assert str_value.startswith(HEX_PREFIX), f"Expecting either an integer or a hex string starting with {HEX_PREFIX}."
-            self.decimal_value = int(str_value, base=16)
+            self.__decimal_value = int(str_value, base=16)
 
         if type(value) == int:
             bit_length: int = int(str_value).bit_length()
             assert bit_length == 256, f"Integer Provided is not 256-bits: {bit_length}-bits"
-            self.decimal_value = int(str_value)
+            self.__decimal_value = int(str_value)
 
     def __str__(self) -> str:
-        return str(self.decimal_value)
+        return str(self.__decimal_value)
 
     def __len__(self) -> int:
-        return len(str(self.decimal_value))
+        return len(str(self.__decimal_value))
+
+    @property
+    def decimal_value(self) -> int:
+        return self.__decimal_value
 
     @property
     def bit_size(self) -> int:
-        return self.decimal_value.bit_length()
+        return self.__decimal_value.bit_length()
 
     def hex(self, prefix: bool=False) -> str:
-        if not prefix: return hex(self.decimal_value)[2:]
-        return hex(self.decimal_value)
+        if not prefix: return hex(self.__decimal_value)[2:]
+        return hex(self.__decimal_value)
 
     def wif(self, compressed: bool=False) -> str:
         # Remove the hexadecimal prefix
@@ -77,11 +82,12 @@ class PrivateKey:
 class PublicKey():
     """ Define a Public Key with methods to manipulate easier. """
 
-    value: InitVar[PrivateKey]
+    value: InitVar[PrivateKey | Point | str | int]
+    curve: InitVar[Curve] = CURVE
 
-    hex_value: str = field(init=False)
+    __hex_value: str = field(init=False)
 
-    def __post_init__(self, value: PrivateKey | Point | str, curve: Curve = CURVE):
+    def __post_init__(self, value: PrivateKey | Point | str | int, curve: Curve):
         
         str_value: str = str(value)
 
@@ -89,10 +95,20 @@ class PublicKey():
             raise EncodingNotValid("Expecting either a PrivateKey object, a Point(x, y) object or an hexa value.")
 
         if type(value) == PrivateKey:
-            assert str_value.startswith(HEX_PREFIX), f"Expecting either an integer or a hex string starting with {HEX_PREFIX}."
-            self.hex_value = fastecdsa.keys.get_public_key(private_key, CURVE)
+            #self.hex_value = fastecdsa.keys.get_public_key(private_key, CURVE)
+            self.__hex_value = encode_elliptic_point(fastecdsa.keys.get_public_key(int(str_value, base=10), curve))
+
+        if type(value) == Point:
+            self.__hex_value = encode_elliptic_point(value) #type: ignore
 
         if type(value) == int:
             bit_length: int = int(str_value).bit_length()
             assert bit_length == 256, f"Integer Provided is not 256-bits: {bit_length}-bits"
-            self.hex_value = int(str_value)
+            self.__hex_value = int(str_value)
+
+        if type(value) == str:
+            assert str_value.startswith(HEX_PREFIX), f"Expecting either an integer or a hex string starting with {HEX_PREFIX}."
+        
+    
+    def __str__(self) -> str:
+        return str(self.__hex_value)

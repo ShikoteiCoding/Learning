@@ -7,10 +7,9 @@ from lib.user import ( User,
     generate_private_key_from_value, generate_public_key_from_private_key, generate_address_from_public_key
 )
 
-from lib.utils import digest, digest_double_entries, cprint
+from lib.utils import digest, digest_double_entries, cprint, encode_elliptic_point
 from lib.keys import PrivateKey, PublicKey
-
-from datetime import datetime
+from fastecdsa.point import Point
 
 DATA_PATH = 'data/'
 
@@ -95,14 +94,16 @@ def create_users() -> None:
 def keys() -> None:
 
     pv_key_hex = "0x1E99423A4ED27608A15A2616A2B0E9E52CED330AC530EDCC32C8FFC6A526AEDD"
+    pu_key_point = generate_public_key_from_private_key(int(pv_key_hex, base=16))
 
     pvk_int = PrivateKey(pv_key_hex)
     #pvk_hex = PrivateKey(pv_key_hex).hex()
     #pvk_wif = PrivateKey(pv_key_hex).wif(compressed=True)
 
-    puk = PublicKey(pvk_int)
+    puk_pvk = PublicKey(pvk_int)
+    puk_point = PublicKey(pu_key_point[0])
 
-    cprint(pvk_int, puk)
+    cprint(pvk_int, puk_pvk, puk_point)
 
     #cprint(pv_key_hex, pvk_int, pvk_hex, pvk_wif)
     

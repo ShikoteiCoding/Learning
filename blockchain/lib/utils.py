@@ -1,9 +1,17 @@
 import hashlib
-from typing import Any, Callable
-from Crypto.Hash import RIPEMD160
 import inspect
 
+from typing import Any, Callable
+from Crypto.Hash import RIPEMD160
+from fastecdsa.point import Point
+
 alphabet = '123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz'
+
+def encode_elliptic_point(point: Point) -> str:
+    """
+    From a Point, encode the key in hexa (str) of 257 bits 
+    """
+    return hex(point.x + ((2 if point.y % 2 == 0 else 3) << 256))
 
 def b58encode(hex_string: str) :
 	""" Return a base58 encoded string from hex string """
