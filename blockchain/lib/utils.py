@@ -32,20 +32,21 @@ def b58decode(value: str, prefix: bool=False):
 		decimal = decimal * 58 + alphabet.index(char)
 	return hex(decimal)[2:] if not prefix else hex(decimal)
 
-def double_hash(value: str) -> str:
+def hash160(value: str) -> str:
     """ Hash sha256 and RIPEND160. """
-    sha256 = hashlib.sha256(value.encode('utf-8')).digest()
+    digested = hashlib.sha256(value.encode('utf-8')).digest()
     h = RIPEMD160.new()
-    h.update(sha256)
-    return str(h)
+    h.update(digested)
+    return h.hexdigest()
 
 def digest(value: str) -> str:
     """ Hash a string value. """
     return hashlib.sha256(value.encode('utf-8')).hexdigest()
 
-def sha256(arg) :
+def sha256(value: str) -> str:
 	""" Return a sha256 hash of a hex string. """
-	byte_array = bytearray.fromhex(arg)
+	print(value)
+	byte_array = bytearray.fromhex(value)
 	m = hashlib.sha256()
 	m.update(byte_array)
 	return m.hexdigest()

@@ -1,6 +1,6 @@
 from dataclasses import InitVar, dataclass, field
 from tabnanny import check
-from lib.utils import b58encode, cprint, sha256, encode_elliptic_point
+from lib.utils import b58encode, cprint, sha256, encode_elliptic_point, hash160
 
 from fastecdsa.point import Point
 from fastecdsa.curve import Curve
@@ -13,6 +13,7 @@ import sys
 
 HEX_PREFIX = "0x"
 WIF_PREFIX = "80"
+B58_PREFIX = "00"
 CURVE = fastecdsa.curve.secp256k1
 
 class EncodingNotValid(Exception):
@@ -56,26 +57,27 @@ class PrivateKey:
     def bit_length(self) -> int:
         return self.__value.bit_length()
 
-    def hex(self, prefix: bool=False) -> str:
+    def hex(self, prefixed: bool = False, compressed: bool = False) -> str:
         """ Return the Private Key in hexadecimal format. """
-        if not prefix: return hex(self.__value)[2:]
-        return hex(self.__value)
+        compression = '' if not compressed else '01'
+        digest = hex(self.__value)[0:] if prefixed else hex(self.__value)[2:]
+        return digest + compression
 
     def wif(self, compressed: bool=False) -> str:
         """ Return the Private Key in Wallet format. """
         # Remove the hexadecimal prefix
-        hex_value = self.hex(prefix=False).upper()
+        hex_value = self.hex(prefixed=False, compressed=False).upper()
         
         # Create the extended version of the hexadecimal key
         compression = '' if not compressed else '01'
         extended = WIF_PREFIX + hex_value + compression
 
+        print(extended)
+
         # Compute the checksum
         checksum = sha256(sha256(extended.upper()).upper())[0:8]
 
         extended_checksum = extended + checksum.upper()
-
-        cprint(hex_value, compression, extended, checksum, extended_checksum)
             
         return b58encode(extended_checksum)
 
@@ -119,7 +121,13 @@ class Address():
         
         str_value: str = str(value)
 
-        assert()
+        assert type(value) == PublicKey, "Expecting a Public Key."
+
+        extended = B58_PREFIX + hash160(str_value)
+        print(extended)
+        checksum = sha256(sha256(extended))[0:8]
+        print(checksum)
+        self.__value = b58encode(extended + checksum)
     
     def __str__(self) -> str:
         return self.__value
