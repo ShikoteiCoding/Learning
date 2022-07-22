@@ -1,6 +1,6 @@
 from dataclasses import InitVar, dataclass, field
 from tabnanny import check
-from lib.utils import b58encode, cprint, sha256, encode_elliptic_point, hash160
+from lib.utils import b58encode, cprint, sha256, encode_elliptic_point, hash160, b58check
 
 from fastecdsa.point import Point
 from fastecdsa.curve import Curve
@@ -14,6 +14,7 @@ import sys
 HEX_PREFIX = "0x"
 WIF_PREFIX = "80"
 B58_PREFIX = "00"
+PUK_PREFIX = "04"
 CURVE = fastecdsa.curve.secp256k1
 
 class EncodingNotValid(Exception):
@@ -63,7 +64,7 @@ class PrivateKey:
         digest = hex(self.__value)[0:] if prefixed else hex(self.__value)[2:]
         return digest + compression
 
-    def wif(self, compressed: bool=False) -> str:
+    def wif(self, compressed: bool = False) -> str:
         """ Return the Private Key in Wallet format. """
         # Remove the hexadecimal prefix
         hex_value = self.hex(prefixed=False, compressed=False).upper()
@@ -89,14 +90,15 @@ class PublicKey():
     curve: InitVar[Curve] = CURVE
 
     # Value of public key is "Compressed Hexadecimal (with 0x prefix)"
-    __value: str = field(init=False)
+    __value: tuple[int, int] = field(init=False)
 
     def __post_init__(self, value: PrivateKey, curve: Curve):
         
         str_value: str = str(value)
 
         assert type(value) == PrivateKey, "Expecting a PrivateKey."
-        self.__value = encode_elliptic_point(fastecdsa.keys.get_public_key(int(str_value, base=10), curve))
+        p: Point = fastecdsa.keys.get_public_key(int(str_value, base=10), curve)
+        self.__value = (p.x, p.y)
 
     def __str__(self) -> str:
         return str(self.__value)
@@ -105,8 +107,23 @@ class PublicKey():
         return len(self.__value)
 
     @property
+    def x(self) -> int:
+        return self.__value[0]
+    
+    @property
+    def y(self) -> int:
+        return self.__value[1]
+
+    @property
     def value(self) -> str:
-        return self.__value
+        return self.hex()
+
+    def hex(self, prefixed: bool = False, compressed: bool = False) -> str:
+        prefix = HEX_PREFIX if prefixed else ""
+        if compressed:
+            return prefix + encode_elliptic_point(Point(self.x, self.y, CURVE))
+        encoding = PUK_PREFIX + str(hex(self.x))[2:] + str(hex(self.y))[2:]
+        return prefix + encoding
 
 @dataclass
 class Address():
@@ -118,16 +135,12 @@ class Address():
     __value: str = field(init=False)
 
     def __post_init__(self, value: PublicKey, curve: Curve) -> None:
-        
-        str_value: str = str(value)
 
         assert type(value) == PublicKey, "Expecting a Public Key."
-
-        extended = B58_PREFIX + hash160(str_value)
-        print(extended)
-        checksum = sha256(sha256(extended))[0:8]
-        print(checksum)
-        self.__value = b58encode(extended + checksum)
+        
+        str_value: str = value.hex(compressed=True)
+        
+        self.__value = b58check(B58_PREFIX, hash160(str_value))
     
     def __str__(self) -> str:
         return self.__value

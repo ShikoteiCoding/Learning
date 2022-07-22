@@ -93,17 +93,26 @@ def create_users() -> None:
 
 def keys() -> None:
 
-    pv_key_hex = "0x3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa6"
-    pu_key_point = generate_public_key_from_private_key(int(pv_key_hex, base=16))
+    #pv_key_hex = "0x3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa6"
+    t = "0xa966eb6058f8ec9f47074a2faadd3dab42e2c60ed05bc34d39d6c0e1d32b8bdf"
+    pu_key_point = generate_public_key_from_private_key(int(t, base=16))
 
-    pvk_int = PrivateKey(pv_key_hex)
-    pvk_wif = pvk_int.wif()
+    pvk_int = PrivateKey(t)
     pvk_hex = pvk_int.hex()
+    pvk_hex_compressed = pvk_int.hex(compressed=True)
+    pvk_wif = pvk_int.wif()
+    pvk_wif_compressed = pvk_int.wif(compressed=True)
+
     puk_pvk = PublicKey(pvk_int)
+    puk_hex = puk_pvk.hex()
+    puk_hex_compressed = puk_pvk.hex(compressed=True)
 
     add = Address(puk_pvk)
 
-    cprint(pvk_int, pvk_wif, pvk_hex, puk_pvk, add)
+    #cprint(pvk_int, pvk_hex, pvk_hex_compressed, pvk_wif, pvk_wif_compressed)
+    #cprint(puk_pvk, puk_hex, puk_hex_compressed)
+    cprint(puk_hex_compressed)
+    cprint(add)
     
 
 if __name__ == "__main__":
