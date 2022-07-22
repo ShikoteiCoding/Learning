@@ -71,16 +71,8 @@ class PrivateKey:
         
         # Create the extended version of the hexadecimal key
         compression = '' if not compressed else '01'
-        extended = WIF_PREFIX + hex_value + compression
-
-        print(extended)
-
-        # Compute the checksum
-        checksum = sha256(sha256(extended.upper()).upper())[0:8]
-
-        extended_checksum = extended + checksum.upper()
             
-        return b58encode(extended_checksum)
+        return b58check(WIF_PREFIX, hex_value + compression)
 
 @dataclass
 class PublicKey():
@@ -139,7 +131,7 @@ class Address():
         assert type(value) == PublicKey, "Expecting a Public Key."
         
         str_value: str = value.hex(compressed=True)
-        
+
         self.__value = b58check(B58_PREFIX, hash160(str_value))
     
     def __str__(self) -> str:

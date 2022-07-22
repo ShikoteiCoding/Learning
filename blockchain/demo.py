@@ -93,8 +93,8 @@ def create_users() -> None:
 
 def keys() -> None:
 
-    #pv_key_hex = "0x3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa6"
-    t = "0xa966eb6058f8ec9f47074a2faadd3dab42e2c60ed05bc34d39d6c0e1d32b8bdf"
+    t = "0x3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa6"
+    #t = "0xa966eb6058f8ec9f47074a2faadd3dab42e2c60ed05bc34d39d6c0e1d32b8bdf"
     pu_key_point = generate_public_key_from_private_key(int(t, base=16))
 
     pvk_int = PrivateKey(t)
@@ -109,9 +109,8 @@ def keys() -> None:
 
     add = Address(puk_pvk)
 
-    #cprint(pvk_int, pvk_hex, pvk_hex_compressed, pvk_wif, pvk_wif_compressed)
-    #cprint(puk_pvk, puk_hex, puk_hex_compressed)
-    cprint(puk_hex_compressed)
+    cprint(pvk_int, pvk_hex, pvk_hex_compressed, pvk_wif, pvk_wif_compressed)
+    cprint(puk_pvk, puk_hex, puk_hex_compressed)
     cprint(add)
     
 

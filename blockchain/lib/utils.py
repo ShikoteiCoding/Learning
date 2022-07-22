@@ -15,21 +15,21 @@ def encode_elliptic_point(point: Point) -> str:
 
 def b58check(prefix_version: str, payload: str) -> str:
 	# First 8 characters are the 4 first bytes
-	checksum = sha256(sha256(prefix_version + payload))[0:8]
+	checksum_payload = prefix_version + payload
+	checksum = sha256(sha256(checksum_payload))[0:8]
 
-	b58 = b58encode(str(prefix_version) + str(payload) + str(checksum))
-
-	cprint(prefix_version, payload, checksum, b58)
-
+	# Encoding the extended payload (payload + checksum)
+	b58 = b58encode(str(checksum_payload) + str(checksum))
 	return b58
 
 def b58encode(hex_string: str) -> str:
 	""" Return a base58 encoded string from hex string """
+	cprint(hex_string)
 	num = int(hex_string, 16)
 	encode = ""
 	base_count = len(ALPHABET)
 	while (num > 0) :
-		num, res = divmod(num,base_count)
+		num, res = divmod(num, base_count)
 		encode = ALPHABET[res] + encode
 	return encode
 
