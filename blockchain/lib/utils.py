@@ -24,7 +24,6 @@ def b58check(prefix_version: str, payload: str) -> str:
 
 def b58encode(hex_string: str) -> str:
 	""" Return a base58 encoded string from hex string """
-	cprint(hex_string)
 	num = int(hex_string, 16)
 	encode = ""
 	base_count = len(ALPHABET)

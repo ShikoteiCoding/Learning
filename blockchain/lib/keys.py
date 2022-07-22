@@ -41,9 +41,7 @@ class PrivateKey:
             self.__value = int(str_value, base=16)
 
         if type(init_value) == int:
-            bit_length: int = int(str_value).bit_length()
-            assert bit_length == 256, f"Integer Provided is not 256-bits: {bit_length}-bits"
-            self.__value = int(str_value)
+            self.__value = int(init_value)
 
     def __str__(self) -> str:
         return str(self.__value)
@@ -122,15 +120,16 @@ class Address():
     """ Define an Address to register a Block or transactions. """
 
     init_value: InitVar[PublicKey]
+    compressed: InitVar[bool] = False
     curve: InitVar[Curve] = CURVE
 
     __value: str = field(init=False)
 
-    def __post_init__(self, value: PublicKey, curve: Curve) -> None:
+    def __post_init__(self, value: PublicKey, compressed: bool, curve: Curve) -> None:
 
         assert type(value) == PublicKey, "Expecting a Public Key."
         
-        str_value: str = value.hex(compressed=True)
+        str_value: str = value.hex(compressed=compressed)
 
         self.__value = b58check(B58_PREFIX, hash160(str_value))
     

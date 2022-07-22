@@ -7,9 +7,11 @@ from lib.user import ( User,
     generate_private_key_from_value, generate_public_key_from_private_key, generate_address_from_public_key
 )
 
-from lib.utils import digest, digest_double_entries, cprint, encode_elliptic_point
+from lib.utils import digest, digest_double_entries, cprint, encode_elliptic_point, hash160
 from lib.keys import PrivateKey, PublicKey, Address
 from fastecdsa.point import Point
+
+import base58
 
 DATA_PATH = 'data/'
 
@@ -108,10 +110,18 @@ def keys() -> None:
     puk_hex_compressed = puk_pvk.hex(compressed=True)
 
     add = Address(puk_pvk)
+    address_not_compressed = "1thMirt546nngXqyPEz532S8fLwbozud8"
+    address_compressed = "14cxpo3MBCYYWCgF74SWTdcmxipnGUsPw3"
 
-    cprint(pvk_int, pvk_hex, pvk_hex_compressed, pvk_wif, pvk_wif_compressed)
-    cprint(puk_pvk, puk_hex, puk_hex_compressed)
+    #cprint(pvk_int, pvk_hex, pvk_hex_compressed, pvk_wif, pvk_wif_compressed)
+    #cprint(puk_pvk, puk_hex, puk_hex_compressed)
     cprint(add)
+    cprint(address_not_compressed, address_compressed)
+
+    print(puk_hex_compressed)
+    module = base58.b58encode_check(b'\x00' + bytes.fromhex(puk_hex), alphabet=base58.BITCOIN_ALPHABET)
+
+    cprint(module)
     
 
 if __name__ == "__main__":

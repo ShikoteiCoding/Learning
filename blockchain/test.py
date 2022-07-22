@@ -9,6 +9,7 @@ from lib.node import Node, Leaf
 from fastecdsa.point import Point
 
 from lib.utils import digest, digest_double_entries
+from lib.keys import PrivateKey, PublicKey, Address
 
 LEAF_VALUES = ['VALUE1', 'VALUE2', 'VALUE3', 'VALUE4', 'VALUE5', 'VALUES6']
 LEAF_HASHES = [digest(value) for value in LEAF_VALUES]
@@ -193,67 +194,26 @@ class TestBlock(unittest.TestCase):
     """
     # Not implemented as there will be improvements now that the global architecture is understood.
 
-class TestUser(unittest.TestCase):
-    """
-    This class is used to test attributes, methods and properties of a potential blockchain User.
-    """
-
-    def setUp(self) -> None:
-        """
-        Initialise a user here as it is an expensive operation and several operations are tested.
-        """
-        self.username = USERS[0]
-        self.user = User(self.username)
-
-        self.private_key = generate_private_key_from_value(self.username)
-        self.public_key, self.public_key_encoded = generate_public_key_from_private_key(self.private_key)
-
-        self.user.set_keys(self.private_key, self.public_key, self.public_key_encoded)
+class TestKeys(unittest.TestCase):
+    """ This class is used to test keys. """
     
-    def tearDown(self) -> None:
-        super().tearDown()
+    def test_full_keys_transformations(self):
+        """ Test Everything. """
 
-    def test_encoding_functions(self) -> None:
-        """ Test the functions stored in user to deal with users keys. """
+        integer = 26563230048437957592232553826663696440606756685920117476832299673293013768870
 
-        private_key = generate_private_key_from_value("VALUE1")
+        private_key_decimal_format = PrivateKey(integer).value
+        private_key_hex_format = PrivateKey(integer).hex(prefixed=False)
+        private_key_hex_compressed_format = PrivateKey(integer).hex(prefixed=False, compressed=True)
+        private_key_wif_format = PrivateKey(integer).wif(compressed=False)
+        private_key_wif__compressed_format = PrivateKey(integer).wif(compressed=True)
 
-        self.assertGreaterEqual(len(str(private_key)), 64)
-        self.assertLessEqual(len(str(private_key)), 78)
-        self.assertEqual(private_key, 73101711357121244040869557647379862999364686624517238390144621704807218443250)
+        self.assertEqual(private_key_decimal_format, integer)
+        self.assertEqual(private_key_hex_format, "3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa6")
+        self.assertEqual(private_key_hex_compressed_format, "3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa601")
+        self.assertEqual(private_key_wif_format, "5JG9hT3beGTJuUAmCQEmNaxAuMacCTfXuw1R3FCXig23RQHMr4K")
+        self.assertEqual(private_key_wif__compressed_format, "KyBsPXxTuVD82av65KZkrGrWi5qLMah5SdNq6uftawDbgKa2wv6S")
 
-        public_key, public_key_encoded = generate_public_key_from_private_key(private_key)
-        self.assertEqual(public_key.x, 68863937396896224516328106466925409444047391051799494080204469204999097398252)
-        self.assertEqual(public_key.y, 112448337416410614927640030702529231480407343724892916721680495766641425200342)
-
-        # Remove '0x' indicating hexadecimal value
-        self.assertEqual(public_key_encoded[2:], '2983f9b7987fd629dadf622093b9743e7f9f62243e79b9924b44798fa6db9b3ec')
-
-
-    def test_valid_user(self) -> None:
-        """
-        Test properties and initialisation of a user.
-        """
-
-        self.assertEqual(self.user.private_key, self.private_key)
-        self.assertEqual(self.user.public_key, self.public_key)
-        self.assertEqual(self.user.public_key_encoded, self.public_key_encoded)
-
-    def test_export_import_user(self):
-        """
-        Test serialization of a user.
-        """
-
-        User.export_(self.user)
-        imported_user = User.import_(self.username)
-
-        self.assertEqual(imported_user.private_key, self.private_key)
-        self.assertEqual(imported_user.public_key, self.public_key)
-        self.assertEqual(imported_user.public_key_encoded, self.public_key_encoded)
-
-        self.assertEqual(self.user.private_key, self.private_key)
-        self.assertEqual(self.user.public_key, self.public_key)
-        self.assertEqual(self.user.public_key_encoded, self.public_key_encoded)
 
 
 if __name__ == '__main__':
