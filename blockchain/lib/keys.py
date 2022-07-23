@@ -105,6 +105,10 @@ class PublicKey():
         return self.__value[1]
 
     @property
+    def coordinates(self) -> tuple[int, int]:
+        return self.x, self.y
+
+    @property
     def value(self) -> str:
         return self.hex()
 

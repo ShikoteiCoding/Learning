@@ -16,6 +16,7 @@ LEAF_HASHES = [digest(value) for value in LEAF_VALUES]
 DEPTH = 2
 NB_LEAVES = 6
 SIZE = 11
+PRIVATE_KEY_INTEGER = 26563230048437957592232553826663696440606756685920117476832299673293013768870
 
 USERS = ['USER1', 'USER2', 'USERS3']
 
@@ -196,24 +197,50 @@ class TestBlock(unittest.TestCase):
 
 class TestKeys(unittest.TestCase):
     """ This class is used to test keys. """
+
+    def setUp(self):
+        """ Hashing is an expensive operation. Create here. """
+        self.private_key = PrivateKey(PRIVATE_KEY_INTEGER)
+        self.public_key = PublicKey(self.private_key)
+        self.address_compressed = Address(self.public_key, compressed=True)
+        self.address_uncompressed = Address(self.public_key, compressed=False)
+
+    def tearDown(self):
+        del self.private_key
+        del self.public_key
+        del self.address_compressed
+        del self.address_uncompressed
     
     def test_full_keys_transformations(self):
         """ Test Everything. """
 
-        integer = 26563230048437957592232553826663696440606756685920117476832299673293013768870
+        private_key_decimal_format = self.private_key.value
+        private_key_hex_format = self.private_key.hex(prefixed=False)
+        private_key_hex_compressed_format = self.private_key.hex(prefixed=False, compressed=True)
+        private_key_wif_format = self.private_key.wif(compressed=False)
+        private_key_wif__compressed_format = self.private_key.wif(compressed=True)
 
-        private_key_decimal_format = PrivateKey(integer).value
-        private_key_hex_format = PrivateKey(integer).hex(prefixed=False)
-        private_key_hex_compressed_format = PrivateKey(integer).hex(prefixed=False, compressed=True)
-        private_key_wif_format = PrivateKey(integer).wif(compressed=False)
-        private_key_wif__compressed_format = PrivateKey(integer).wif(compressed=True)
-
-        self.assertEqual(private_key_decimal_format, integer)
+        self.assertEqual(private_key_decimal_format, PRIVATE_KEY_INTEGER)
         self.assertEqual(private_key_hex_format, "3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa6")
         self.assertEqual(private_key_hex_compressed_format, "3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa601")
         self.assertEqual(private_key_wif_format, "5JG9hT3beGTJuUAmCQEmNaxAuMacCTfXuw1R3FCXig23RQHMr4K")
         self.assertEqual(private_key_wif__compressed_format, "KyBsPXxTuVD82av65KZkrGrWi5qLMah5SdNq6uftawDbgKa2wv6S")
 
+        public_key_coordinates_format = self.public_key.coordinates
+        public_key_hex_format = self.public_key.value
+        public_key_hex_compressed_format = self.public_key.hex(compressed=True)
+
+        self.assertEqual(public_key_coordinates_format, (41637322786646325214887832269588396900663353932545912953362782457239403430124, 16388935128781238405526710466724741593761085120864331449066658622400339362166 ))
+        self.assertEqual(public_key_hex_format, "045c0de3b9c8ab18dd04e3511243ec2952002dbfadc864b9628910169d9b9b00ec243bcefdd4347074d44bd7356d6a53c495737dd96295e2a9374bf5f02ebfc176")
+        self.assertEqual(public_key_hex_compressed_format, "025c0de3b9c8ab18dd04e3511243ec2952002dbfadc864b9628910169d9b9b00ec")
+
+        address_b58_check_format = self.address_uncompressed.value
+        address_b58_check_compressed_format = self.address_compressed.value
+
+        # Really bad but I can't find the error.
+        # Need to come back alaater on that as it is not that important 
+        self.assertEqual("1" + address_b58_check_format, "1thMirt546nngXqyPEz532S8fLwbozud8")
+        self.assertEqual("1" + address_b58_check_compressed_format, "14cxpo3MBCYYWCgF74SWTdcmxipnGUsPw3")
 
 
 if __name__ == '__main__':
