@@ -33,14 +33,13 @@ def kmeans(points, number_cluster=3, max_iter=100):
     clusters = {}
 
     # Till convergence or max_iter
-    while max_iter < 100:
+    while max_iter > 0:
         max_iter -= 1
         
         # Reset clusters
         clusters = {} 
-        for centroid in clusters:
+        for centroid in centroids:
             clusters[str(centroid)] = []
-
         # Give each point a cluster (nearest centroid)
         for point in points:
             nearest_centroid = shorted_centroid(point, centroids)
