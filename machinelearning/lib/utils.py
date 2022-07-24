@@ -1,13 +1,16 @@
 import numpy as np
 
+from functools import reduce
 import matplotlib.pyplot as plt
 
-def scatter_plot_coordinates(points):
+def scatter_plot_coordinates(clusters):
+    """ Plot coordinates as a scatter. """
 
-    x_coordinates = list(map(lambda c: c[0], points))
-    y_coordinates = list(map(lambda c: c[1], points))
+    points = np.array(reduce(lambda prev, next: prev + next, clusters.values(), []))
 
-    plt.scatter(x_coordinates, y_coordinates)
+    colors = np.array(reduce(lambda prev, next: prev + [next[0]] * len(next[1][1]), enumerate(clusters.items()), []))
+
+    plt.scatter(points[:,0], points[:,1], c=colors) # type: ignore
     plt.show()
 
 def generate_random_2d_clusters(number_points=100, number_centroids=3, max_delta=5):

@@ -10,22 +10,19 @@ def cost(points, clusters):
 
 def compute_centroid(points):
     """ Given points, compute the centroid. """
-    x_coordinates = list(map(lambda c: c[0], points))
-    y_coordinates = list(map(lambda c: c[1], points))
+    return np.mean(points, axis=0)
 
-    return [np.mean(x_coordinates), np.mean(y_coordinates)]
-
-def shorted_centroid(point, centroids):
+def shortest_centroid(point, centroids, dist_func=euclidian_distance):
     min_dist = +np.Inf
     nearest = None
     for centroid in centroids:
-        curr_dist = euclidian_distance(centroid, point)
+        curr_dist = dist_func(centroid, point)
         if curr_dist < min_dist:
             nearest = centroid
             min_dist = curr_dist
     return nearest
 
-def kmeans(points, number_cluster=3, max_iter=100):
+def kmeans(points, number_cluster=3, max_iter=100, dist_func=euclidian_distance):
     """ Self-made K-means algorithm """
     # Init clusters with random centroids
     centroid_indexes = np.random.randint(0, 50, size=number_cluster)
@@ -42,7 +39,7 @@ def kmeans(points, number_cluster=3, max_iter=100):
             clusters[str(centroid)] = []
         # Give each point a cluster (nearest centroid)
         for point in points:
-            nearest_centroid = shorted_centroid(point, centroids)
+            nearest_centroid = shortest_centroid(point, centroids, dist_func)
             clusters[str(nearest_centroid)].append(point)
 
         # Compute for each cluster the new centroid
