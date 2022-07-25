@@ -14,38 +14,44 @@ def compute_centroid(points):
 
 def shortest_centroid(point, centroids, dist_func=euclidian_distance):
     min_dist = +np.Inf
-    nearest = None
-    for centroid in centroids:
-        curr_dist = dist_func(centroid, point)
+    nearest_index = 0
+    for i in range(len(centroids)):
+        curr_dist = dist_func(centroids[i], point)
         if curr_dist < min_dist:
-            nearest = centroid
+            nearest_index = i
             min_dist = curr_dist
-    return nearest
+    return nearest_index
 
 def kmeans(points, number_cluster=3, max_iter=100, dist_func=euclidian_distance):
     """ Self-made K-means algorithm """
+    n = len(points)
+
     # Init clusters with random centroids
     centroid_indexes = np.random.randint(0, 50, size=number_cluster)
     centroids = points[centroid_indexes]
-    clusters = {}
+
+    # Each point position is labeled with the cluster 
+    points_to_cluster = [0] * n
+    # Each cluster stores it's points
+    clusters_to_point = []
 
     # Till convergence or max_iter
     while max_iter > 0:
         max_iter -= 1
-        
-        # Reset clusters
-        clusters = {} 
-        for centroid in centroids:
-            clusters[str(centroid)] = []
+
+        # Reset the clusters for each iteration
+        clusters_to_point = [[] for _ in range(number_cluster)]
+
         # Give each point a cluster (nearest centroid)
-        for point in points:
-            nearest_centroid = shortest_centroid(point, centroids, dist_func)
-            clusters[str(nearest_centroid)].append(point)
+        for i in range(n):
+            nearest_centroid_index = shortest_centroid(points[i], centroids, dist_func)
+            points_to_cluster[i] = nearest_centroid_index
+            clusters_to_point[nearest_centroid_index].append(points[i])
 
         # Compute for each cluster the new centroid
         new_centroids = []
-        for _, value in clusters.items():
-            new_centroids.append(compute_centroid(value))
+        for cluster in clusters_to_point:
+            new_centroids.append(compute_centroid(cluster))
         centroids = new_centroids
     
-    return clusters, centroids
+    return points_to_cluster, centroids

@@ -8,5 +8,5 @@ from lib import utils
 if __name__ == "__main__":
     """  """
     points = utils.generate_random_2d_clusters(100, 3, 5)
-    clusters, centroids = kmeans.kmeans(points)
-    utils.scatter_plot_coordinates(clusters)
+    points_to_cluster, centroids = kmeans.kmeans(points)
+    utils.scatter_plot_coordinates(points, points_to_cluster)
