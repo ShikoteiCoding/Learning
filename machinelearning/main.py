@@ -1,5 +1,6 @@
 from functools import reduce
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
 from lib import kmeans
@@ -11,5 +12,18 @@ def demo_kmeans():
     points_to_cluster, centroids = kmeans.kmeans(points)
     utils.scatter_plot_coordinates(points, points_to_cluster)
 
+def demo_pca():
+    df = pd.read_csv("data/devices_stats.csv")
+
+    standard_df = pd.DataFrame()
+
+    numeric_columns = [col for col in df.columns if df[col].dtype == float]
+
+    for col in numeric_columns:
+        standard_df[col + "_norm"] = pca.normalize_standard(df[col])
+    
+    print(standard_df)
+
 if __name__ == "__main__":
     """  """
+    demo_pca()
