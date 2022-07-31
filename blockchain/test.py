@@ -249,12 +249,16 @@ class TestUsers(unittest.TestCase):
         """ Hashing is an expensive operation. Create here. """
         self.private_key = PrivateKey(PRIVATE_KEY_INTEGER)
         self.public_key = PublicKey(self.private_key)
-        self.address_compressed = Address(self.public_key, compressed=True)
         self.address_uncompressed = Address(self.public_key, compressed=False)
 
     def test_user(self) -> None:
         """ Test user class. """
-        
+        user = User("User-1", self.private_key)
+
+        self.assertEqual(user.private_key, self.private_key)
+        self.assertEqual(user.public_key, self.public_key)
+        self.assertEqual(user.address, self.address_uncompressed)
+
 
 if __name__ == '__main__':
     unittest.main()
