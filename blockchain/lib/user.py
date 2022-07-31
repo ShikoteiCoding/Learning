@@ -2,8 +2,6 @@ from __future__ import annotations
 
 from dataclasses import InitVar, dataclass, field
 
-from blockchain.lib.keys import PrivateKey
-
 from .utils import digest, hash160, b58encode
 from .keys import PublicKey, PrivateKey, Address
 

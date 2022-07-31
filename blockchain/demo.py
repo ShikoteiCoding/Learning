@@ -77,26 +77,9 @@ def create_blockchain_without_users():
     
     print(bc)
 
-def create_users() -> None:
-    user = User.import_("User 1")
-
-    private_key = generate_private_key_from_value("VALUE1")
-    public_key, public_key_encoded = generate_public_key_from_private_key(private_key)
-    address = generate_address_from_public_key(public_key_encoded)
-
-    cprint(
-        private_key,
-        public_key,
-        public_key_encoded,
-        address,
-    )
-    print(len(public_key_encoded))
-    print(len('0202a406624211f2abbdc68da3df929f938c3399dd79fac1b51b0e4ad1d26a47aa'))
-
 def keys() -> None:
 
     t = "0x3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa6"
-    #t = "0xa966eb6058f8ec9f47074a2faadd3dab42e2c60ed05bc34d39d6c0e1d32b8bdf"
     pu_key_point = generate_public_key_from_private_key(int(t, base=16))
 
     pvk_int = PrivateKey(t)
@@ -112,9 +95,6 @@ def keys() -> None:
     add = Address(puk_pvk)
     address_not_compressed = "1thMirt546nngXqyPEz532S8fLwbozud8"
     address_compressed = "14cxpo3MBCYYWCgF74SWTdcmxipnGUsPw3"
-
-    #cprint(pvk_int, pvk_hex, pvk_hex_compressed, pvk_wif, pvk_wif_compressed)
-    #cprint(puk_pvk, puk_hex, puk_hex_compressed)
     cprint(add)
     cprint(address_not_compressed, address_compressed)
 
@@ -122,32 +102,15 @@ def keys() -> None:
     module = base58.b58encode_check(b'\x00' + bytes.fromhex(puk_hex), alphabet=base58.BITCOIN_ALPHABET)
 
     cprint(module)
+
+def create_users() -> None:
+    user = User("User-1", PrivateKey("0x3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa6"))
+
+    cprint(
+        user
+    )
+
     
 
 if __name__ == "__main__":
-    keys()
-
-"""
-$ python key-to-address-ecc-example.py
-Private Key (hex) is:
- 3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa6
-Private Key (decimal) is:
- 26563230048437957592232553826663696440606756685920117476832299673293013768870
-Private Key (WIF) is:
- 5JG9hT3beGTJuUAmCQEmNaxAuMacCTfXuw1R3FCXig23RQHMr4K
-Private Key Compressed (hex) is:
- 3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa601
-Private Key (WIF-Compressed) is:
- KyBsPXxTuVD82av65KZkrGrWi5qLMah5SdNq6uftawDbgKa2wv6S
-Public Key (x,y) coordinates is:
- (41637322786646325214887832269588396900663353932545912953362782457239403430124L,
- 16388935128781238405526710466724741593761085120864331449066658622400339362166L)
-Public Key (hex) is:
- 045c0de3b9c8ab18dd04e3511243ec2952002dbfadc864b9628910169d9b9b00ec243bcefdd4347074d44bd7356d6a53c495737dd96295e2a9374bf5f02ebfc176
-Compressed Public Key (hex) is:
- 025c0de3b9c8ab18dd04e3511243ec2952002dbfadc864b9628910169d9b9b00ec
-Bitcoin Address (b58check) is:
- 1thMirt546nngXqyPEz532S8fLwbozud8
-Compressed Bitcoin Address (b58check) is:
- 14cxpo3MBCYYWCgF74SWTdcmxipnGUsPw3
-"""
+    create_users()
