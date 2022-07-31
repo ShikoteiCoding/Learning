@@ -242,6 +242,19 @@ class TestKeys(unittest.TestCase):
         self.assertEqual("1" + address_b58_check_format, "1thMirt546nngXqyPEz532S8fLwbozud8")
         self.assertEqual("1" + address_b58_check_compressed_format, "14cxpo3MBCYYWCgF74SWTdcmxipnGUsPw3")
 
+class TestUsers(unittest.TestCase):
+    """ This class is used to test users. """
+
+    def setUp(self) -> None:
+        """ Hashing is an expensive operation. Create here. """
+        self.private_key = PrivateKey(PRIVATE_KEY_INTEGER)
+        self.public_key = PublicKey(self.private_key)
+        self.address_compressed = Address(self.public_key, compressed=True)
+        self.address_uncompressed = Address(self.public_key, compressed=False)
+
+    def test_user(self) -> None:
+        """ Test user class. """
+        
 
 if __name__ == '__main__':
     unittest.main()
