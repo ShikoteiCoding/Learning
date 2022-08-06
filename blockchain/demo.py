@@ -1,6 +1,8 @@
 from lib.blockchain import Blockchain
 from lib.block import Block, Data
 
+from lib.transaction import Transaction
+
 from lib.tree import MerkleTree
 from lib.node import Node, Leaf
 from lib.user import ( User, 
@@ -110,7 +112,10 @@ def create_users() -> None:
         user
     )
 
-    
+def transactions() -> None:
+
+    t = Transaction()
+    print(t)
 
 if __name__ == "__main__":
-    create_users()
+    transactions()

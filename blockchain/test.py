@@ -189,12 +189,6 @@ class TestMerkleTree(unittest.TestCase):
         bst.insert(Leaf(digest(LEAF_VALUES[1])))
         self.assertEqual(bst.hash, digest_double_entries(LEAF_HASHES[0], LEAF_HASHES[1]))
 
-class TestBlock(unittest.TestCase):
-    """ 
-    This class is used to test things related to the Block of a chain.
-    """
-    # Not implemented as there will be improvements now that the global architecture is understood.
-
 class TestKeys(unittest.TestCase):
     """ This class is used to test keys. """
 
@@ -258,6 +252,12 @@ class TestUsers(unittest.TestCase):
         self.assertEqual(user.private_key, self.private_key)
         self.assertEqual(user.public_key, self.public_key)
         self.assertEqual(user.address, self.address_uncompressed)
+
+class TestBlock(unittest.TestCase):
+    """ 
+    This class is used to test things related to the Block of a chain.
+    """
+    # Not implemented as there will be improvements now that the global architecture is understood.
 
 
 if __name__ == '__main__':
