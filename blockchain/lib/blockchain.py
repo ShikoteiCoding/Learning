@@ -12,12 +12,27 @@ class NotProvedBlock(Exception):
     ...
 
 @dataclass
+class UnspentOutput:
+    """
+    Output of a transaction to store global latest state.
+    Each participant (buyer + sellers) should produce an output.
+    Used to verified if the transaction is possible.
+    """
+    transaction_hash: str
+    transaction_index: int
+    transaction_output_index: int
+    value: int
+    value_hex: str
+
+@dataclass
 class Blockchain:
     """ Chain storing class. """
     tail: Block | None = field(init=False, repr=False, default=None)
     head: Block | None = field(init=False, repr=False, default=None)
 
-    __transaction_queue: list[str] = field(init=False, repr=False, default_factory = list)
+    __transaction_queue: list[str] = field(init=False, repr=False, default_factory=list)
+    __unspent_outputs: list[UnspentOutput] = field(init=False, repr=False, default_factory=list)
+
     __nounce: str = field(init=False, default="")
     __size: int = field(init=False, default=0)
 

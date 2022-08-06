@@ -21,4 +21,3 @@ class Transaction:
     inputs: list[int] = field(default_factory=list)
     output_counter: int = field(default=0)
     outputs: list[int] = field(default_factory=list)
-    locktime: datetime.datetime = field(default_factory=datetime.datetime.now)
