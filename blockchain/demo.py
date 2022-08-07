@@ -115,7 +115,7 @@ def create_blockchain_without_users():
 
 
     for _ in range(0, 5):
-        bc.add_transaction("I'm a transaction")
+        bc.add_transaction(Transaction("I'm a transaction"))
         bc.mine()
     
     print(bc)

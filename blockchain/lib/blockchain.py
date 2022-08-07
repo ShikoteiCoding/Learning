@@ -37,7 +37,7 @@ class Blockchain:
     __nounce: str = field(init=False, repr=True)
     __size: int = field(init=False, repr=True, default=0)
 
-    __transaction_queue: list[str] = field(init=False, repr=False, default_factory=list)
+    __transaction_queue: list[Transaction] = field(init=False, repr=False, default_factory=list)
     __validated_transactions: list[Transaction] = field(init=False, default_factory=list)
     __unspent_outputs: list[UnspentOutput] = field(init=False, repr=False, default_factory=list)
 
@@ -53,6 +53,11 @@ class Blockchain:
         """ Genesis Block. First block. """
         block = Block("", nounce, datetime.now(), Data())
         return block
+    
+    @staticmethod
+    def block_voting(mined_blocks: list[Block]):
+        """ Given many blocks, select the first correct mined block. """
+        raise NotImplementedError()
 
     def add_block(self, block: Block) -> Block:
         """ Add a block to existing blockchain. """
@@ -64,10 +69,7 @@ class Blockchain:
         if not self.block_is_valid(block):
             raise NotProvedBlock(f"Block provided does not contain proof. Nounce is {self.__nounce}. ")
         
-        if not self.tail or not self.head:
-            self.tail = block
-        else:
-            Block.link_blocks(self.head, block)
+        Block.link_blocks(self.head, block)
 
         self.head = block
         self.__size += 1
@@ -77,8 +79,8 @@ class Blockchain:
         """ Verify the block hash with the current nounce. """
         return block.hash.startswith(self.__nounce)
 
-    def add_transaction(self, transaction: str) -> None:
-        """ Add a transaction in the queue. """
+    def add_transaction(self, transaction: Transaction) -> None:
+        """ Add a transaction in the queue. Transaction is considered to be valid at this point. """
         self.__transaction_queue.append(transaction)
 
     def mine(self) -> None:
