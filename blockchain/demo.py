@@ -67,18 +67,6 @@ def node_compare():
 
     print(node, node1)
 
-def create_blockchain_without_users():
-    """ Create and build blockchain without users. Simplistic scenario. """
-
-    bc = Blockchain()
-    bc.create_genesis_block()
-
-    for _ in range(0, 5):
-        bc.add_transaction("I'm a transaction")
-        bc.mine()
-    
-    print(bc)
-
 def keys() -> None:
 
     t = "0x3aba4162c7251c891207b747840551a71939b0de081f85c4e44cf7c13e41daa6"
@@ -117,5 +105,20 @@ def transactions() -> None:
     t = Transaction()
     print(t)
 
+def create_blockchain_without_users():
+    """ Create and build blockchain without users. Simplistic scenario. """
+
+    # Dependency injection. Avoid dealing with non-Optional attributes
+    nounce = ""
+    genesis_block = Blockchain.create_genesis_block(nounce).compute_hash()
+    bc = Blockchain(genesis_block, nounce)
+
+
+    for _ in range(0, 5):
+        bc.add_transaction("I'm a transaction")
+        bc.mine()
+    
+    print(bc)
+
 if __name__ == "__main__":
-    transactions()
+    create_blockchain_without_users()

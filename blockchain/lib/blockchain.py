@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import InitVar, dataclass, field
 from datetime import datetime
 
 from .block import Block, Data
+from .transaction import Transaction
 
 
 class NotDigestedBlock(Exception):
@@ -27,19 +28,30 @@ class UnspentOutput:
 @dataclass
 class Blockchain:
     """ Chain storing class. """
-    tail: Block | None = field(init=False, repr=False, default=None)
-    head: Block | None = field(init=False, repr=False, default=None)
+    genesis_block: InitVar[Block]
+    genesis_nounce: InitVar[str]
+
+    tail: Block = field(init=False, repr=False)
+    head: Block = field(init=False, repr=False)
+
+    __nounce: str = field(init=False, repr=True)
+    __size: int = field(init=False, repr=True, default=0)
 
     __transaction_queue: list[str] = field(init=False, repr=False, default_factory=list)
+    __validated_transactions: list[Transaction] = field(init=False, default_factory=list)
     __unspent_outputs: list[UnspentOutput] = field(init=False, repr=False, default_factory=list)
 
-    __nounce: str = field(init=False, default="")
-    __size: int = field(init=False, default=0)
+    def __post_init__(self, genesis_block: Block, genesis_nounce: str) -> None:
+        """ Initializing the blockchain given a pre-forged block. """
+        self.__nounce = genesis_nounce
+        self.tail = genesis_block
+        self.head = genesis_block
+        self.__size = 1
 
-    def create_genesis_block(self) -> Block:
+    @staticmethod  
+    def create_genesis_block(nounce: str) -> Block:
         """ Genesis Block. First block. """
-        block = Block("", self.__nounce, datetime.now(), Data())
-        self.add_block(block.compute_hash())
+        block = Block("", nounce, datetime.now(), Data())
         return block
 
     def add_block(self, block: Block) -> Block:
