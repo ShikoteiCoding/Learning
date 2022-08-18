@@ -47,9 +47,11 @@ def test_linked_list():
 
     print(f"After adding 3 elements: {l}")
 
+    print(f"Getting the element of iteratively: {[l.get(i) for i in range(0, l.size)]} with size = {l.size}")
     removed = l.remove()
 
     print(f"After removing one element: {l}, removed element is ({removed}), new size is {l.size}")
+
 
     removed = l.remove()
     removed = l.remove()
@@ -60,6 +62,8 @@ def test_linked_list():
         l.remove()
     except:
         print(f"Empty LinkedList: {l}")
+
+    
 
 if __name__ == "__main__":
     print("Examples go here")

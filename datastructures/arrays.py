@@ -59,10 +59,6 @@ class LinkedList:
         self.tail = None
         self.size = 0
 
-    
-    def find(self):
-        ...
-
     def add(self, el):
         n = self.Node(el)
 
@@ -103,6 +99,23 @@ class LinkedList:
         self.size -= 1
 
         return last
+
+    def get(self, index):
+        assert index >= 0
+        assert type(index) == int
+
+        if index >= self.size:
+            raise IndexError("Index out of range")
+
+        curr = self.head
+        while curr.next and index > 0: # type: ignore
+            index -= 1
+            curr = curr.next # type: ignore
+
+        return curr.value # type: ignore
+
+    def find(self, value):
+        ...
 
     def __str__(self):
 
