@@ -1,4 +1,4 @@
-from arrays import Stack, Queue
+from arrays import Stack, Queue, LinkedList
 
 
 def test_stack():
@@ -36,7 +36,32 @@ def test_queue():
     except:
         print("Empty Queue")
 
+def test_linked_list():
+    l = LinkedList()
+
+    print(f"Empty linked list {l}")
+
+    l.add(1)
+    l.add(2)
+    l.add(3)
+
+    print(f"After adding 3 elements: {l}")
+
+    removed = l.remove()
+
+    print(f"After removing one element: {l}, removed element is ({removed}), new size is {l.size}")
+
+    removed = l.remove()
+    removed = l.remove()
+
+    print(f"After removing all elements: {l}, removed element is ({removed}), new size is {l.size}")
+
+    try:
+        l.remove()
+    except:
+        print(f"Empty LinkedList: {l}")
+
 if __name__ == "__main__":
     print("Examples go here")
 
-    test_queue()
+    test_linked_list()

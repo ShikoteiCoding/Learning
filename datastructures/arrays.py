@@ -1,5 +1,8 @@
 
 
+from xml.dom import IndexSizeErr
+
+
 class Stack:
     """ LIFO """
 
@@ -37,3 +40,81 @@ class Queue:
 
     def __str__(self):
         return str(self.__container)
+
+class LinkedList:
+    """ Class linked list """
+
+    class Node:
+        """ Put the node here. """
+
+        def __init__(self, val):
+            self.value = val
+            self.next = None
+
+        def __str__(self):
+            return str(self.value)
+    
+    def __init__(self):
+        self.head = None
+        self.tail = None
+        self.size = 0
+
+    
+    def find(self):
+        ...
+
+    def add(self, el):
+        n = self.Node(el)
+
+        if not self.head and not self.tail:
+            self.head = n
+            self.tail = n
+        else:
+            self.tail.next = n # type: ignore
+            self.tail = n
+
+        self.size += 1
+        return n
+
+    def remove(self):
+        
+        if not self.head:
+            raise IndexError("Linked list is Empty")
+
+        last = None
+
+        if self.size == 1:
+            last = self.head
+            self.head = None
+            self.tail = None
+
+        else:
+            curr = self.head
+            last = self.tail
+            new_last = None
+            while curr.next:
+                if curr.next == last:
+                    new_last = curr
+                    break
+                curr = curr.next
+            new_last.next = None # type: ignore
+            self.tail = new_last
+
+        self.size -= 1
+
+        return last
+
+    def __str__(self):
+
+        def __recursive_print():
+            if not self.head:
+                return "[]"
+            s = "["
+            curr = self.head
+            while curr.next:
+                s += (str(curr) + ', ')
+                curr = curr.next
+            s += f"{self.tail.value}]" # type: ignore
+            return s
+        
+        return __recursive_print()
