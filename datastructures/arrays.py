@@ -100,6 +100,39 @@ class LinkedList:
 
         return last
 
+    def remove_elem(self, index):
+        if not self.head:
+            raise IndexError("Linked list is Empty")
+
+        curr = self.head
+        i = 0
+
+        if index == 0 and not self.head.next:
+            print("Emptying the list.")
+            self.head = None
+            self.tail = None
+        elif index == 0 and self.head.next:
+            print("Removing first node.")
+            self.head = self.head.next
+        else:
+            while curr.next:
+                if i < index - 1:
+                    i += 1
+                    curr = curr.next
+                    continue
+
+                if curr.next == self.tail:
+                    print("Removing end node.")
+                    curr.next = None
+                    self.tail = curr
+                else:
+                    print("Removing intermediate node.")
+                    jump = curr.next.next
+                    curr.next = jump
+                break
+        
+        self.size -= 1
+
     def get(self, index):
         assert index >= 0
         assert type(index) == int

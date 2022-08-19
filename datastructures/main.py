@@ -1,5 +1,5 @@
 from arrays import Stack, Queue, LinkedList
-from graphs import AdjacencyMatrix
+from graphs import AdjacencyMatrix, AdjacencyList
 
 
 def test_stack():
@@ -67,7 +67,7 @@ def test_linked_list():
     except:
         print(f"Empty LinkedList: {l}")
 
-def test_adjacency_list():
+def test_adjacency_matrix():
     a = AdjacencyMatrix()
 
     [a.add_vertex() for _ in range(4)]
@@ -80,7 +80,28 @@ def test_adjacency_list():
 
     print(a) 
 
+def test_adjacency_list():
+    a = AdjacencyList()
+
+    [a.add_vertex() for _ in range(4)]
+
+    a.add_edge(0, 1)
+    a.add_edge(2, 0)
+    a.add_edge(3, 0)
+    a.add_edge(3, 1)
+    a.add_edge(3, 2)
+    a.add_edge(3, 2)    # already connected
+    a.add_edge(2, 3)    # already connected
+
+    print(a) 
+
+    a.remove_edge(3, 0)
+    #a.remove_edge(2, 0)
+    #a.remove_edge(2, 1)
+
+    print(a) 
+
 if __name__ == "__main__":
-    print("Examples go here")
+    print("Examples go here:\n")
 
     test_adjacency_list()
