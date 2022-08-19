@@ -114,8 +114,24 @@ class LinkedList:
 
         return curr.value # type: ignore
 
-    def find(self, value):
-        ...
+    def find_first(self, value):
+        """ First occurence only. """
+        
+        if self.size == 0:
+            return
+
+        if self.head.value == value: # type: ignore
+            return 0
+        
+        index = 0
+        curr = self.head
+        while curr.next: # type: ignore
+            index += 1
+            curr = curr.next # type: ignore
+            if curr.value == value:
+                return index
+        
+        return
 
     def __str__(self):
 

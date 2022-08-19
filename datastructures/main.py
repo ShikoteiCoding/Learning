@@ -45,6 +45,9 @@ def test_linked_list():
     l.add(2)
     l.add(3)
 
+    pos = l.find_first(3)
+    print(f"Find position of value 3: {pos}")
+
     print(f"After adding 3 elements: {l}")
 
     print(f"Getting the element of iteratively: {[l.get(i) for i in range(0, l.size)]} with size = {l.size}")
