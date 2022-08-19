@@ -6,7 +6,7 @@ class AdjacencyMatrix:
         self.size = 0
     
     def add_edge(self, vi, vj):
-        assert vi >= 0; vj >= 0; vi != vj  # avoid self connected vertices
+        assert vi >= 0, "" ; vj >= 0, ""; vi != vj, ""  # avoid self connected vertices
 
         if vi >= self.size or vj >= self.size:
             raise IndexError("Index out of matrix range. Node does not exist.")
@@ -15,7 +15,7 @@ class AdjacencyMatrix:
         self.matrix[vj][vi] = 1
 
     def remove_edge(self, vi, vj):
-        assert vi >= 0; vj >= 0; vi != vj  # avoid self connected vertices
+        assert vi >= 0, ""; vj >= 0, ""; vi != vj, ""  # avoid self connected vertices
 
         if vi >= self.size or vj >= self.size:
             raise IndexError("Index out of matrix range. Vertex does not exist.")
