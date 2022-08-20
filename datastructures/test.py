@@ -25,6 +25,9 @@ class TestStack(unittest.TestCase):
         self.assertEqual(li, 2) # Last element was 2
         self.assertEqual(self.stack, [0, 1])
 
+    def test_limits(self):
+        self.assertRaises(IndexError, self.stack.remove)
+
 class TestQueue(unittest.TestCase):
     """ Test the queue expected behavior. """
 
@@ -47,6 +50,9 @@ class TestQueue(unittest.TestCase):
         self.assertEqual(len(self.queue), 2)
         self.assertEqual(fi, 0) # First element
         self.assertEqual(self.queue, [1, 2])
+
+    def test_limits(self):
+        self.assertRaises(IndexError, self.queue.remove)
 
 if __name__ == "__main__":
     unittest.main()
