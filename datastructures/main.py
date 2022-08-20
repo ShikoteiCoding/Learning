@@ -1,6 +1,7 @@
 from arrays import Stack, Queue, LinkedList
 from graphs import AdjacencyMatrix, AdjacencyList
 
+from utils import print_banner
 
 def test_stack():
     s = Stack()
@@ -81,9 +82,12 @@ def test_adjacency_matrix():
     print(a) 
 
 def test_adjacency_list():
-    a = AdjacencyList()
+    print("#" * 50)
+    print("\tTesting Not Directed Adjacency List")
+    print("#" * 50)
+    a = AdjacencyList(directed=False)
 
-    [a.add_vertex() for _ in range(4)]
+    for _ in range(4): a.add_vertex()
 
     a.add_edge(0, 1)
     a.add_edge(2, 0)
@@ -93,15 +97,35 @@ def test_adjacency_list():
     a.add_edge(3, 2)    # already connected
     a.add_edge(2, 3)    # already connected
 
-    print(a) 
+    print(a)
 
     a.remove_edge(3, 0)
-    #a.remove_edge(2, 0)
-    #a.remove_edge(2, 1)
+    a.remove_edge(2, 0)
+    a.remove_edge(2, 1)
 
-    print(a) 
+    print(a)
+
+def test_adjacency_directed_list():
+    print_banner("Testing Directed Adjacency List")
+    a = AdjacencyList(directed=True)
+
+    for _ in range(4): a.add_vertex()
+
+    a.add_edge(0, 1)
+    a.add_edge(2, 0)
+    a.add_edge(3, 0)
+    a.add_edge(3, 1)
+    a.add_edge(3, 2)
+    a.add_edge(3, 2)    # already connected
+    a.add_edge(2, 3)    # already connected
+
+    print(a)
+
+    
+
 
 if __name__ == "__main__":
     print("Examples go here:\n")
 
     test_adjacency_list()
+    test_adjacency_directed_list()

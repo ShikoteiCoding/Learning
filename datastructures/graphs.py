@@ -55,9 +55,10 @@ class AdjacencyMatrix:
 class AdjacencyList:
     """ Graph vertex to list representation. Don't use numpy either. """
 
-    def __init__(self):
+    def __init__(self, directed = False):
         self.size = 0
         self.vertices = []
+        self.directed = directed
 
     def add_edge(self, vi, vj):
         assert vi >= 0, ""; vj >= 0, ""; vi != vj, ""  # avoid self connected vertices
