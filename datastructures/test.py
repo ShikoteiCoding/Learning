@@ -1,6 +1,6 @@
 import unittest
 
-from arrays import (Stack, Queue)
+from arrays import (Stack, Queue, LinkedList)
 
 class TestStack(unittest.TestCase):
     """ Test the stack expected behavior. """
@@ -53,6 +53,48 @@ class TestQueue(unittest.TestCase):
 
     def test_limits(self):
         self.assertRaises(IndexError, self.queue.remove)
+
+class TestLinkedList(unittest.TestCase):
+    """ Test of linked list expected behavior. """
+
+    def setUp(self):
+        self.llist = LinkedList()
+
+    def test_empty(self):
+        self.assertEqual(len(self.llist), 0)
+
+    def test_add_element(self):
+        for i in range(3): self.llist.add(i)
+
+        self.assertEqual(len(self.llist), 3)
+
+    def test_remove_element(self):
+        for i in range(3): self.llist.add(i)
+
+        li = self.llist.remove() # remove the last element
+
+        self.assertEqual(len(self.llist), 2)
+        self.assertEqual(li, 2)
+        self.assertEqual(self.llist, [0, 1])
+    
+    def test_find_first_element_index(self):
+        for i in range(10): self.llist.add(i)
+        indexes = [0, 2, 5]
+        found_indexes = [self.llist.find_first(index) for index in indexes]
+
+        self.assertEqual(found_indexes, indexes)
+
+    #def test_remove_element_by_index(self):
+    #    for i in range(10): self.llist.add(i)
+    #    indexes = [0, 2, 5]
+    #
+    #    for index in indexes: self.llist.remove_elem_by_index(index)
+    #
+    #    print(self.llist)
+    #    self.assertEqual(len(self.llist), 10 - len(indexes))
+    #    self.assertEqual(self.llist, list(set([i for i in range(10)]) - set(indexes)))
+
+
 
 if __name__ == "__main__":
     unittest.main()

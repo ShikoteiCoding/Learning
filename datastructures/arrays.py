@@ -64,6 +64,11 @@ class LinkedList:
 
         def __str__(self):
             return str(self.value)
+
+        def __eq__(self, el):
+            if type(el) == int:
+                return self.value == el
+            return self.value == el.value
     
     def __init__(self):
         self.head = None
@@ -111,7 +116,8 @@ class LinkedList:
 
         return last
 
-    def remove_elem(self, index):
+    def remove_elem_by_index(self, index):
+        """ Careful while using, if element is removed, index changes to. """
         if not self.head:
             raise IndexError("Linked list is Empty")
 
@@ -176,6 +182,24 @@ class LinkedList:
                 return index
         
         return
+
+    def __len__(self):
+        return self.size
+
+    def __eq__(self, el):
+        def _recursive_equal(el):
+            _list = []
+            curr = self.head
+            while curr.next:    # type: ignore
+                _list.append(curr.value) # type: ignore
+                curr = curr.next # type: ignore
+            _list.append(curr.value) # type: ignore
+            return _list == el
+
+        if type(el) == list:
+            return _recursive_equal(el)
+
+        return self == el
 
     def __str__(self):
 
