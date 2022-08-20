@@ -1,8 +1,3 @@
-
-
-from xml.dom import IndexSizeErr
-
-
 class Stack:
     """ LIFO """
 
