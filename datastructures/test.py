@@ -76,25 +76,23 @@ class TestLinkedList(unittest.TestCase):
         self.assertEqual(len(self.llist), 2)
         self.assertEqual(li, 2)
         self.assertEqual(self.llist, [0, 1])
-    
-    def test_find_first_element_index(self):
-        for i in range(10): self.llist.add(i)
-        indexes = [0, 2, 5]
-        found_indexes = [self.llist.find_first(index) for index in indexes]
 
+    def test_find_first_element_index_with_value_offset(self):
+        """ Index position is not value. """
+        for i in range(10): self.llist.add(i - 1)
+        values = [0, 2, 5]
+        indexes = [1, 3, 6]
+        found_indexes = [self.llist.find_first(value) for value in values]
         self.assertEqual(found_indexes, indexes)
 
-    #def test_remove_element_by_index(self):
-    #    for i in range(10): self.llist.add(i)
-    #    indexes = [0, 2, 5]
-    #
-    #    for index in indexes: self.llist.remove_elem_by_index(index)
-    #
-    #    print(self.llist)
-    #    self.assertEqual(len(self.llist), 10 - len(indexes))
-    #    self.assertEqual(self.llist, list(set([i for i in range(10)]) - set(indexes)))
-
-
+    def test_remove_element_by_index(self):
+        for i in range(10): self.llist.add(i)
+        values = [0, 2, 5]
+    
+        for value in values: self.llist.remove_elem_by_index(self.llist.find_first(value))
+    
+        self.assertEqual(len(self.llist), 10 - len(values))
+        self.assertEqual(self.llist, list(set([i for i in range(10)]) - set(values)))
 
 if __name__ == "__main__":
     unittest.main()
