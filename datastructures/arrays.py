@@ -18,6 +18,14 @@ class Stack:
             raise IndexError("Stack is empty.")
         return self.__container.pop()
 
+    def __eq__(self, el):
+        if type(el) == list:
+            return self.__container == el
+        return self == el
+
+    def __len__(self):
+        return len(self.__container)
+
     def __str__(self):
         return str(self.__container)
 
@@ -37,6 +45,14 @@ class Queue:
         fi = self.__container[0]
         self.__container = self.__container[1:]
         return fi
+
+    def __eq__(self, el):
+        if type(el) == list:
+            return self.__container == el
+        return self == el
+
+    def __len__(self):
+        return len(self.__container)
 
     def __str__(self):
         return str(self.__container)

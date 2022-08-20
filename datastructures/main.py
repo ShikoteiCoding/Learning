@@ -119,9 +119,6 @@ def test_adjacency_directed_list():
 
     print(a)
 
-    
-
-
 if __name__ == "__main__":
     print("Examples go here:\n")
 
