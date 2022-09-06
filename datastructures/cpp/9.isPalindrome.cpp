@@ -3,7 +3,7 @@
 
 using namespace std;
 
-// Leetcode: Two Sum Problem C++
+// Leetcode: Is a Palindrome Problem C++
 
 class Solution {
 public:
