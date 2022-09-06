@@ -3,7 +3,7 @@
 
 using namespace std;
 
-// Leetcode: Two Sum Problem C++
+// Leetcode: Roman Number to Integer C++
 
 class Solution {
 public:
