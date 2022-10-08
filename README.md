@@ -1,5 +1,5 @@
 # Learning
-Repo to learn new stuff and small learning projects not worth a git repo.
+Mono repository to store worked on coding skills.
 
 ## Databases
 Resolving some query problems in different DBMS. 
