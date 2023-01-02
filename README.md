@@ -16,3 +16,6 @@ Leetcode: https://leetcode.com/ShikoteiCoding/
 
 ## Machine Learning
 Building from scratch machine learning related algorithm to get better at explanation of models.
+
+## Design Patterns
+Small example of design patterns through real small projects to apply.
