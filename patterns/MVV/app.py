@@ -10,5 +10,8 @@ if __name__ == '__main__':
 
     m = Model()
     c = Controller()
-    v = View
+
+    v = View()
+    v.init_window()
+    v.run()
 
