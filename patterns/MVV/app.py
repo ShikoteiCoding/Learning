@@ -6,12 +6,16 @@ from pattern import Model, Controller, View
 if __name__ == '__main__':
     logging.basicConfig(level = logging.INFO)
 
-    logging.info("App is starting...")
+    logging.info('App is starting...')
 
     m = Model()
-    c = Controller()
-
     v = View()
-    v.init_window()
-    v.run()
 
+    c = Controller(m, v)
+
+    v.init_window()
+
+    v.bind(v.del_button, c.delete_item)
+
+
+    v.run()
