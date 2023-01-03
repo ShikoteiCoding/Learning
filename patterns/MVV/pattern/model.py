@@ -7,7 +7,7 @@ DATABASE_PATH = 'items.db'
 class Model:
 
     def __init__(self):
-        
+        self.items = []
         self.init_db()
 
     def init_db(self):

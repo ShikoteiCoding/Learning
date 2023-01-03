@@ -7,15 +7,22 @@ class Controller:
         self.model = model
         self.view = view
 
+    def init_view(self):
+        self.update_view()
+
     def get_items(self):
-        return self.model.get_items()
+        self.model.get_items()
+        self.update_view()
 
     def delete_item(self, name):
-        return self.model.delete_item(name)
+        self.model.delete_item(name)
+        self.update_view()
 
     def add_item(self):
-        ...
+        self.update_view()
 
     def update_view(self):
         # Less coupled version: controller is responsible to update view (can be the model though)
-        ...
+        
+        for item in self.model.items:
+            self.view.insert(0, item)

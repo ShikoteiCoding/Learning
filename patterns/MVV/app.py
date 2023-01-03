@@ -16,6 +16,7 @@ if __name__ == '__main__':
     v.init_window()
 
     v.bind(v.del_button, c.delete_item)
+    v.bind(v.inputbox, c.add_item)
 
-
+    c.init_view()
     v.run()

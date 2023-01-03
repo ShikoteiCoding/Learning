@@ -24,8 +24,8 @@ class View:
         self.listbox = tk.Listbox(self.window)
         self.listbox.place(x=10, y=10)
 
-        self.textbox = tk.Text(self.window)
-        self.textbox.place(x=10, y=200, height=20, width=300)
+        self.inputbox = tk.Text(self.window)
+        self.inputbox.place(x=10, y=200, height=20, width=300)
 
     @staticmethod
     def bind(component: tk.Tk, cmd: Callable):
