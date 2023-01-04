@@ -33,11 +33,12 @@ class Controller:
     # Handlers
     def handle_delete(self, event: str) -> int:
         el = self.view.listbox.get(tk.ACTIVE)
-        logging.info(f'{event}. Delete input is on {el or None}')
+        logging.info(f"{event}. Delete input is on {el or None}")
 
-        if not el: return 0
+        if not el:
+            return 0
 
-        self.model.delete_item(el[1])
+        self.model.delete_item(el[0])
         self.update_view()
 
         return 1
@@ -62,6 +63,6 @@ class Controller:
 
         if not items:
             return
-        
+
         for item in items:
             self.view.listbox.insert(tk.END, item)
