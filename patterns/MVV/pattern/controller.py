@@ -31,12 +31,20 @@ class Controller:
         self.update_view()
 
     # Handlers
-    def handle_delete(self, event: str):
-        logging.log(event)
+    def handle_delete(self, event: str) -> int:
+        el = self.view.listbox.get(tk.ACTIVE)
+        logging.info(f'{event}. Delete input is on {el or None}')
+
+        if not el: return 0
+
+        self.model.delete_item(el[1])
+        self.update_view()
+
+        return 1
 
     def handle_input(self, event: str) -> int:
         input = self.view.inputbox.get(1.0, "end-1c").strip()
-        logging.info(f'{event}. Text input is "{input}"')
+        logging.info(f'{event}. Text input is "{input or None}"')
 
         if not input:
             return 0
@@ -45,12 +53,15 @@ class Controller:
         self.view.inputbox.delete(1.0, tk.END)
         self.update_view()
 
+        return 1
+
     def update_view(self):
         # Less coupled version: controller is responsible to update view (can be the model though)
         items = self.model.get_items()
+        self.view.listbox.delete(0, tk.END)
+
         if not items:
             return
-
-        self.view.listbox.delete(0, tk.END)
+        
         for item in items:
             self.view.listbox.insert(tk.END, item)

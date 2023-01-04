@@ -35,7 +35,7 @@ class Model:
 
     def delete_item(self, name: str) -> int:
         cursor = self.conn.cursor()
-        cursor.execute("DELETE * FROM items WHERE name = ?;", (name,))
+        cursor.execute("DELETE FROM items WHERE name = ?;", (name,))
         return cursor.lastrowid
 
     def add_item(self, name: str) -> int:
