@@ -1,15 +1,24 @@
+import logging
+
+import tkinter as tk
+
 from pattern.model import Model
 from pattern.view import View
 
-class Controller:
 
-    def __init__(self, model:Model, view:View):
+class Controller:
+    def __init__(self, model: Model, view: View):
         self.model = model
         self.view = view
 
     def init_view(self):
+
+        self.view.bind(self.view.del_button, "<Button>", self.handle_delete)
+        self.view.bind(self.view.inputbox, "<Return>", self.handle_input)
+
         self.update_view()
 
+    # Model management
     def get_items(self):
         self.model.get_items()
         self.update_view()
@@ -21,8 +30,27 @@ class Controller:
     def add_item(self):
         self.update_view()
 
+    # Handlers
+    def handle_delete(self, event: str):
+        logging.log(event)
+
+    def handle_input(self, event: str) -> int:
+        input = self.view.inputbox.get(1.0, "end-1c").strip()
+        logging.info(f'{event}. Text input is "{input}"')
+
+        if not input:
+            return 0
+
+        self.model.add_item(input)
+        self.view.inputbox.delete(1.0, tk.END)
+        self.update_view()
+
     def update_view(self):
         # Less coupled version: controller is responsible to update view (can be the model though)
-        
-        for item in self.model.items:
-            self.view.insert(0, item)
+        items = self.model.get_items()
+        if not items:
+            return
+
+        self.view.listbox.delete(0, tk.END)
+        for item in items:
+            self.view.listbox.insert(tk.END, item)
