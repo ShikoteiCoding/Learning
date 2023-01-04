@@ -3,16 +3,18 @@ import logging
 
 from pattern import Model, Controller, View
 
+
+def main() -> None:
+    logging.info("App is starting...")
+
+    model = Model()
+    view = View()
+    controller = Controller(model, view)
+
+    controller.run()
+
+
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
 
-    logging.info("App is starting...")
-
-    m = Model()
-    v = View()
-
-    c = Controller(m, v)
-
-    v.init_window()
-    c.init_view()
-    v.run()
+    main()

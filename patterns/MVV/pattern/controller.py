@@ -11,58 +11,43 @@ class Controller:
         self.model = model
         self.view = view
 
-    def init_view(self):
-
         self.view.bind(self.view.del_button, "<Button>", self.handle_delete)
         self.view.bind(self.view.inputbox, "<Return>", self.handle_input)
 
-        self.update_view()
-
-    # Model management
-    def get_items(self):
-        self.model.get_items()
-        self.update_view()
-
-    def delete_item(self, name):
-        self.model.delete_item(name)
-        self.update_view()
-
-    def add_item(self):
-        self.update_view()
+        self.update_task_list()
 
     # Handlers
-    def handle_delete(self, event: str) -> int:
-        el = self.view.listbox.get(tk.ACTIVE)
-        logging.info(f"{event}. Delete input is on {el or None}")
+    def handle_delete(self, event: tk.Event) -> None:
+        el = self.view.get_active_task()
+        logging.info(f"{str(event)}. Delete input is on {el or None}")
 
         if not el:
-            return 0
+            return
 
         self.model.delete_item(el[0])
-        self.update_view()
+        self.update_task_list()
 
-        return 1
-
-    def handle_input(self, event: str) -> int:
-        input = self.view.inputbox.get(1.0, "end-1c").strip()
-        logging.info(f'{event}. Text input is "{input or None}"')
+    def handle_input(self, event: tk.Event) -> None:
+        input = self.view.get_entry_text()
+        logging.info(f'{str(event)}. Text input is "{input or None}"')
 
         if not input:
-            return 0
+            return
 
         self.model.add_item(input)
-        self.view.inputbox.delete(1.0, tk.END)
-        self.update_view()
+        self.view.clear_entry_text()
+        self.update_task_list()
 
-        return 1
-
-    def update_view(self):
+    def update_task_list(self):
         # Less coupled version: controller is responsible to update view (can be the model though)
         items = self.model.get_items()
-        self.view.listbox.delete(0, tk.END)
+        self.view.clear_task_list()
 
         if not items:
             return
 
         for item in items:
-            self.view.listbox.insert(tk.END, item)
+            self.view.add_task_to_list(item)
+
+    def run(self):
+        self.view.mainloop()
